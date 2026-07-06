@@ -1,0 +1,9 @@
+flowchart TD
+    A["Basiswert suchen (z. B. AAPL)"] --> B["Optionskette / Option Chain öffnen"]
+    B --> C["Verfallsdatum wählen (z. B. 30-45 Tage)"]
+    C --> D["Strike wählen (z. B. Delta ~0,30 für Puts)"]
+    D --> E["Aktion wählen: Verkaufen (Sell)"]
+    E --> F["Ordertyp = LIMIT"]
+    F --> G["Preis nahe Mittelkurs / Mid setzen"]
+    G --> H["Order prüfen: 1 Kontrakt = 100 Stück,<br/>Margin, Gebühren"]
+    H --> I["Übermitteln (Transmit)"]

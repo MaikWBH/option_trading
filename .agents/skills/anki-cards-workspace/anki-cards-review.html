@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "anki-cards", "runs": [{"id": "eval-1-greeks-with_skill", "prompt": "Ich lerne gerade Optionshandel und habe die Greeks noch nicht wirklich verstanden. Erstelle mir Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega \u2014 auf Deutsch. Ich bin Anf\u00e4nger, also bitte mit guten Erkl\u00e4rungen und Beispielen. Wenn ein Diagramm helfen w\u00fcrde, f\u00fcge es ein.", "eval_id": 1, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki-Karten: Die Options-Greeks (Anf\u00e4ngerkurs)\n\n**Deck:** `Optionen::Griechen`  \n**Sprache:** Deutsch | **Niveau:** Anf\u00e4nger  \n**Karten gesamt:** 19 (15 Basic + 4 Cloze)  \n**Erstellt:** 2026-07-06\n\n---\n\n## Empfohlene Deck-Struktur\n\n```\nOptionen::Griechen::Delta\nOptionen::Griechen::Gamma\nOptionen::Griechen::Theta\nOptionen::Griechen::Vega\nOptionen::Griechen::\u00dcbersicht\n```\n\n---\n\n## Hinweis: Diagramm-Karten in Anki\n\nF\u00fcr die Karten mit Mermaid-Diagrammen f\u00fcge einmalig folgenden Code in die Anki-Kartenvorlage ein (Card Template \u2192 R\u00fcckseite, oben):\n\n```html\n<script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>\n<script>mermaid.initialize({startOnLoad:true});</script>\n```\n\n---\n\n## Delta-Karten (5 Karten)\n\n---\n\n### Karte D1 \u2014 Basic `Optionen::Griechen::Delta`\n\n**Vorderseite:**\n> Du h\u00e4ltst eine Call-Option mit **Delta = 0.40**.  \n> Die Aktie steigt um **$1**.  \n> Um wie viel \u00e4ndert sich der Optionspreis n\u00e4herungsweise?\n\n**R\u00fcckseite:**\n\nDer Optionspreis steigt um ca. **$0.40** (= 0.40 \u00d7 $1).\n\nDelta misst die **Preis\u00e4nderung der Option** pro $1 Kurs\u00e4nderung der Aktie.\n\n\ud83e\udde0 **Eselsbr\u00fccke:** Delta = \u201ewie viele Cent bewegt sich die Option, wenn die Aktie $1 bewegt?\"\n\n---\n\n### Karte D2 \u2014 Basic `Optionen::Griechen::Delta`\n\n**Vorderseite:**\n> In welchem Wertebereich liegt Delta f\u00fcr Call- und Put-Optionen?\n\n**R\u00fcckseite:**\n\n| Optionstyp | Wertebereich | OTM \u2192 ATM \u2192 ITM |\n|---|---|---|\n| Call | 0 bis +1.0 | 0.10 \u2192 0.50 \u2192 0.90 |\n| Put | \u22121.0 bis 0 | \u22120.10 \u2192 \u22120.50 \u2192 \u22120.90 |\n\n**Merkhilfe:** ATM-Optionen haben immer Delta \u2248 **\u00b10.50**\n\n---\n\n### Karte D3 \u2014 Basic `Optionen::Griechen::Delta`\n\n**Vorderseite:**\n> Was bedeutet es, wenn eine Call-Option **Delta = 0.50** hat?\n\n**R\u00fcckseite:**\n\nDie Option ist \u201eat the money\" (ATM) \u2014 der Aktienkurs liegt ungef\u00e4hr beim Strike-Preis.\n\nDelta \u2248 0.50 entspricht auch **~50% Wahrscheinlichkeit**, dass die Option bei Verfall im Geld (ITM) endet.\n\n\u26a0\ufe0f Das ist eine N\u00e4herung, keine exakte Wahrscheinlichkeit!\n\n---\n\n### Karte D4 \u2014 Cloze `Optionen::Griechen::Delta`\n\nDelta misst die **Preis\u00e4nderung der Option** pro $1 {{c1::Kurs\u00e4nderung der Aktie}}.  \nCalls haben immer ein {{c2::positives}} Delta (0 bis 1).  \nPuts haben immer ein {{c3::negatives}} Delta (\u22121 bis 0).  \nEine ATM-Option hat Delta \u2248 {{c4::\u00b10.50}}.\n\n---\n\n### Karte D5 \u2014 Diagramm `Optionen::Griechen::Delta`\n\n**Vorderseite:**\n> Wie ver\u00e4ndert sich das Delta einer Call-Option je nach Moneyness (OTM \u2192 ATM \u2192 ITM)?\n\n**R\u00fcckseite:**\n\n```mermaid\nflowchart LR\n    OTM[\"OTM\nDelta \u2248 0.10\u20130.30\nOption weit aus dem Geld\"]\n    ATM[\"ATM\nDelta \u2248 0.50\nAktienkurs \u2248 Strike\"]\n    ITM[\"ITM\nDelta \u2248 0.70\u20131.0\nOption im Geld\"]\n\n    OTM -->|\"Aktie steigt\"| ATM\n    ATM -->|\"Aktie steigt\"| ITM\n    ITM -->|\"Aktie f\u00e4llt\"| ATM\n    ATM -->|\"Aktie f\u00e4llt\"| OTM\n```\n\nDelta **steigt**, je weiter eine Call-Option ins Geld (ITM) r\u00fcckt.\n\n---\n\n## Gamma-Karten (4 Karten)\n\n---\n\n### Karte G1 \u2014 Basic `Optionen::Griechen::Gamma`\n\n**Vorderseite:**\n> Du hast eine Call-Option mit **Delta = 0.50** und **Gamma = 0.05**.  \n> Die Aktie steigt um **$1**.  \n> Was ist das neue Delta nach dieser Bewegung?\n\n**R\u00fcckseite:**\n\nNeues Delta = **0.55** (= 0.50 + 0.05)\n\nGamma misst, wie schnell sich **Delta** bei einer $1 Bewegung der Aktie \u00e4ndert.\n\n\ud83d\ude97 **Analogie:** Delta = Geschwindigkeit des Optionspreises. Gamma = Beschleunigung.\n\n---\n\n### Karte G2 \u2014 Basic `Optionen::Griechen::Gamma`\n\n**Vorderseite:**\n> Wann ist das Gamma einer Option am h\u00f6chsten?\n\n**R\u00fcckseite:**\n\nBei **ATM-Optionen kurz vor dem Verfallsdatum**.\n\nWarum? ATM-Optionen \u201ekippen\" am schnellsten zwischen ITM und OTM \u2014 kurz vor Verfall ist diese Unsicherheit am gr\u00f6\u00dften.\n\n\u26a0\ufe0f **Risiko:** Hohes Gamma = Delta \u00e4ndert sich schnell = gro\u00dfe \u00dcberraschungen m\u00f6glich!\n\n---\n\n### Karte G3 \u2014 Cloze `Optionen::Griechen::Gamma`\n\nGamma misst die {{c1::\u00c4nderungsrate von Delta}} pro $1 Bewegung der Aktie.  \nGamma ist am h\u00f6chsten bei {{c2::ATM-Optionen nahe dem Verfallsdatum}}.  \nAls Optionsk\u00e4ufer hast du {{c3::positives}} Gamma (du profitierst von gro\u00dfen Bewegungen).  \nAls Optionsverk\u00e4ufer hast du {{c4::negatives}} Gamma (gro\u00dfe Bewegungen schaden dir).\n\n---\n\n### Karte G4 \u2014 Diagramm `Optionen::Griechen::Gamma`\n\n**Vorderseite:**\n> Wie h\u00e4ngen Delta und Gamma zusammen?\n\n**R\u00fcckseite:**\n\n```mermaid\nflowchart TD\n    AK[\"Aktie bewegt sich $1\"]\n    D[\"Delta wird aktualisiert\ndurch Gamma\"]\n    P[\"Optionspreis \u00e4ndert sich\"]\n    G[\"Gamma = \u00c4nderungsrate von Delta\"]\n\n    AK -->|\"Delta bestimmt \u00c4nderung\"| P\n    AK -->|\"Gamma aktualisiert Delta\"| G\n    G -->|\"neues Delta\"| D\n    D -->|\"bestimmt Preis\"| P\n```\n\n\ud83e\udde0 **Merkhilfe:** Gamma ist das \u201eUpdate\" f\u00fcr Delta nach jeder Kursbewegung.\n\n---\n\n## Theta-Karten (4 Karten)\n\n---\n\n### Karte T1 \u2014 Basic `Optionen::Griechen::Theta`\n\n**Vorderseite:**\n> Du besitzt eine Call-Option. **Theta = \u22120.05**.  \n> Was passiert mit dem Optionspreis, wenn ein Tag vergeht (ohne Kursbewegung)?\n\n**R\u00fcckseite:**\n\nDer Optionspreis sinkt um ca. **$0.05** \u2014 einfach weil ein Tag vergangen ist.\n\nTheta misst den **t\u00e4glichen Zeitwertverlust** einer Option.\n\n| Position | Theta | Bedeutung |\n|---|---|---|\n| Optionsk\u00e4ufer | Negativ | Verlierst t\u00e4glich Wert |\n| Optionsverk\u00e4ufer | Positiv | Sammelst t\u00e4glich Pr\u00e4mie |\n\n---\n\n### Karte T2 \u2014 Basic `Optionen::Griechen::Theta`\n\n**Vorderseite:**\n> Warum ist es riskant, eine Option mit nur noch **2 Wochen** bis zum Verfall zu **kaufen**?\n\n**R\u00fcckseite:**\n\nWeil **Theta (Zeitverfall) nahe dem Verfallsdatum am st\u00e4rksten wirkt**.\n\nDer Zeitwertverlust beschleunigt sich exponentiell in den letzten Wochen. Eine ATM-Option kann im letzten Monat mehr Wert verlieren als in allen vorherigen Monaten zusammen.\n\n\ud83d\udcc5 **Faustregel:** Je weniger Zeit bis Verfall, desto aggressiver frisst Theta den Optionswert.\n\n---\n\n### Karte T3 \u2014 Cloze `Optionen::Griechen::Theta`\n\nTheta ist fast immer {{c1::negativ}} f\u00fcr den Optionsk\u00e4ufer, weil der Zeitwert {{c2::t\u00e4glich abnimmt}}.  \nDer Zeitverfall beschleunigt sich {{c3::nahe dem Verfallsdatum}}.  \nOptionsverk\u00e4ufer profitieren von {{c4::positivem Theta}} (sie kassieren den Zeitwert).\n\n---\n\n### Karte T4 \u2014 Diagramm `Optionen::Griechen::Theta`\n\n**Vorderseite:**\n> Wie verl\u00e4uft der Zeitwert einer ATM-Option \u00fcber die Zeit bis zum Verfall?\n\n**R\u00fcckseite:**\n\n```mermaid\nxychart-beta\n    title \"Zeitwertverfall (Theta) einer ATM-Option\"\n    x-axis [\"12 Mo\", \"10 Mo\", \"8 Mo\", \"6 Mo\", \"4 Mo\", \"2 Mo\", \"1 Mo\", \"Verfall\"]\n    y-axis \"Zeitwert ($)\" 0 --> 6\n    line [5.5, 5.0, 4.3, 3.5, 2.5, 1.5, 0.8, 0]\n```\n\nDer Zeitwert **f\u00e4llt nicht linear** \u2014 die Kurve wird zum Verfallsdatum hin steiler (st\u00e4rkerer Verfall).  \nIn den letzten 2 Monaten verliert die Option genauso viel wie in den ersten 10 Monaten zusammen!\n\n---\n\n## Vega-Karten (4 Karten)\n\n---\n\n### Karte V1 \u2014 Basic `Optionen::Griechen::Vega`\n\n**Vorderseite:**\n> Was misst **Vega** bei einer Option?  \n> Angenommen: **Vega = 0.10** \u2014 was passiert bei IV +1%?\n\n**R\u00fcckseite:**\n\n**Vega** misst, wie stark sich der Optionspreis \u00e4ndert, wenn die **implizite Volatilit\u00e4t (IV)** um 1% steigt oder f\u00e4llt.\n\nBeispiel mit Vega = 0.10:\n- IV steigt +1% \u2192 Optionspreis **+$0.10**\n- IV f\u00e4llt \u22121% \u2192 Optionspreis **\u2212$0.10**\n\n---\n\n### Karte V2 \u2014 Basic `Optionen::Griechen::Vega`\n\n**Vorderseite:**\n> Du kaufst eine Call-Option (Long).  \n> Die Marktvolatilit\u00e4t (IV) steigt pl\u00f6tzlich stark an.  \n> Was passiert mit dem Wert deiner Option?\n\n**R\u00fcckseite:**\n\nDer Optionswert **steigt** \u2014 du bist \u201eLong Vega\".\n\n| Position | Vega | Profitiert von |\n|---|---|---|\n| Optionsk\u00e4ufer | Positiv (Long Vega) | Steigender IV |\n| Optionsverk\u00e4ufer | Negativ (Short Vega) | Fallender IV |\n\n\ud83d\udca1 **Merkhilfe:** Hohe IV = mehr Chance auf gro\u00dfe Bewegungen = Optionen wertvoller \u2192 K\u00e4ufer profitiert.\n\n---\n\n### Karte V3 \u2014 Basic `Optionen::Griechen::Vega`\n\n**Vorderseite:**\n> Bei welchen Optionen ist Vega am h\u00f6chsten?\n\n**R\u00fcckseite:**\n\nBei **ATM-Optionen mit langer Restlaufzeit** (z.B. LEAPs mit 6\u201312 Monaten).\n\nWarum?\n- **ATM:** Maximale Unsicherheit \u2192 IV hat gr\u00f6\u00dften Einfluss\n- **Lange Laufzeit:** Mehr Zeit f\u00fcr Volatilit\u00e4ts\u00e4nderungen \u2192 st\u00e4rkere Auswirkung\n\n\ud83d\udccc **Praktisch:** Ein LEAP bei +5% IV kann deutlich im Preis steigen, ohne dass sich die Aktie bewegt.\n\n---\n\n### Karte V4 \u2014 Cloze `Optionen::Griechen::Vega`\n\nVega misst die Sensitivit\u00e4t des Optionspreises gegen\u00fcber {{c1::impliziter Volatilit\u00e4t (IV)}}.  \nWenn IV steigt, profitieren {{c2::Optionsk\u00e4ufer (Long Vega)}}.  \nWenn IV f\u00e4llt, profitieren {{c3::Optionsverk\u00e4ufer (Short Vega)}}.  \nVega ist am h\u00f6chsten bei {{c4::ATM-Optionen mit langer Restlaufzeit}}.\n\n---\n\n## \u00dcbersicht-Karten (2 Karten)\n\n---\n\n### Karte \u00dc1 \u2014 Basic `Optionen::Griechen::\u00dcbersicht`\n\n**Vorderseite:**\n> Nenne die vier wichtigsten Options-Greeks und was sie jeweils messen.\n\n**R\u00fcckseite:**\n\n| Greek | Symbol | Misst\u2026 | Beeinflusst durch |\n|---|---|---|---|\n| Delta | \u0394 | Preis\u00e4nderung pro $1 Aktienbewegung | Aktienkurs |\n| Gamma | \u0393 | \u00c4nderungsrate von Delta | Aktienkurs |\n| Theta | \u0398 | T\u00e4glicher Zeitwertverlust | Zeit |\n| Vega | V | Sensitivit\u00e4t gg\u00fc. Volatilit\u00e4t (IV) | Implizite Volatilit\u00e4t |\n\n\ud83e\udde0 **Eselsbr\u00fccke:** **D**ein **G**ewinn **T**r\u00e4umt **V**on (Delta, Gamma, Theta, Vega)\n\n---\n\n### Karte \u00dc2 \u2014 Diagramm `Optionen::Griechen::\u00dcbersicht`\n\n**Vorderseite:**\n> Welche Marktfaktoren beeinflussen den Optionspreis \u2014 und welcher Greek misst den jeweiligen Einfluss?\n\n**R\u00fcckseite:**\n\n```mermaid\nflowchart TD\n    P[\"\ud83d\udcca Optionspreis\"]\n\n    AK[\"\ud83d\udcc8 Aktienkurs \u00e4ndert sich\"] -->|\"Delta \u0394 \u2014 direkte Wirkung\"| P\n    AK -->|\"Gamma \u0393 \u2014 aktualisiert Delta\"| D[\"Delta wird angepasst\"]\n    D --> P\n\n    T[\"\u23f0 Zeit vergeht\"] -->|\"Theta \u0398 \u2014 t\u00e4glicher Verlust\"| P\n    IV[\"\ud83c\udf0a Implizite Volatilit\u00e4t \u00e4ndert sich\"] -->|\"Vega V \u2014 IV-Sensitivit\u00e4t\"| P\n```\n\nDie vier Greeks messen jeweils den Einfluss eines anderen Marktfaktors auf den Optionspreis.\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,I3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6QmFzaWMKI2RlY2s6T3B0aW9uZW46OkdyaWVjaGVuOjpEZWx0YQpEdSBow6RsdHN0IGVpbmUgQ2FsbC1PcHRpb24gbWl0IDxiPkRlbHRhID0gMC40MDwvYj4uPGJyPkRpZSBBa3RpZSBzdGVpZ3QgdW0gPGI+JDE8L2I+Ljxicj5VbSB3aWUgdmllbCDDpG5kZXJ0IHNpY2ggZGVyIE9wdGlvbnNwcmVpcyBuw6RoZXJ1bmdzd2Vpc2U/CURlciBPcHRpb25zcHJlaXMgc3RlaWd0IHVtIGNhLiA8Yj4kMC40MDwvYj4gKD0gMC40MCDDlyAkMSkuPGJyPjxicj5EZWx0YSBtaXNzdCBkaWUgPGI+UHJlaXPDpG5kZXJ1bmcgZGVyIE9wdGlvbjwvYj4gcHJvICQxIEt1cnPDpG5kZXJ1bmcgZGVyIEFrdGllLjxicj48YnI+8J+noCA8Yj5Fc2Vsc2Jyw7xja2U6PC9iPiBEZWx0YSA9IOKAnndpZSB2aWVsZSBDZW50IGJld2VndCBzaWNoIGRpZSBPcHRpb24sIHdlbm4gZGllIEFrdGllICQxIGJld2VndD8iCkluIHdlbGNoZW0gV2VydGViZXJlaWNoIGxpZWd0IERlbHRhIGbDvHIgQ2FsbC0gdW5kIFB1dC1PcHRpb25lbj8JPHRhYmxlIGJvcmRlcj0iMSIgY2VsbHBhZGRpbmc9IjUiIHN0eWxlPSJib3JkZXItY29sbGFwc2U6Y29sbGFwc2UiPjx0cj48dGg+T3B0aW9uc3R5cDwvdGg+PHRoPldlcnRlYmVyZWljaDwvdGg+PHRoPk9UTSDihpIgQVRNIOKGkiBJVE08L3RoPjwvdHI+PHRyPjx0ZD5DYWxsPC90ZD48dGQ+MCBiaXMgKzEuMDwvdGQ+PHRkPjAuMTAg4oaSIDAuNTAg4oaSIDAuOTA8L3RkPjwvdHI+PHRyPjx0ZD5QdXQ8L3RkPjx0ZD7iiJIxLjAgYmlzIDA8L3RkPjx0ZD7iiJIwLjEwIOKGkiDiiJIwLjUwIOKGkiDiiJIwLjkwPC90ZD48L3RyPjwvdGFibGU+PGJyPjxiPk1lcmtoaWxmZTo8L2I+IEFUTS1PcHRpb25lbiBoYWJlbiBpbW1lciBEZWx0YSDiiYggPGI+wrEwLjUwPC9iPgpXYXMgYmVkZXV0ZXQgZXMsIHdlbm4gZWluZSBDYWxsLU9wdGlvbiA8Yj5EZWx0YSA9IDAuNTA8L2I+IGhhdD8JRGllIE9wdGlvbiBpc3Qg4oCeYXQgdGhlIG1vbmV5IiAoQVRNKSDigJQgZGVyIEFrdGllbmt1cnMgbGllZ3QgdW5nZWbDpGhyIGJlaW0gU3RyaWtlLVByZWlzLjxicj48YnI+RGVsdGEg4omIIDAuNTAgZW50c3ByaWNodCBhdWNoIDxiPn41MCUgV2FocnNjaGVpbmxpY2hrZWl0PC9iPiwgZGFzcyBkaWUgT3B0aW9uIGJlaSBWZXJmYWxsIGltIEdlbGQgKElUTSkgZW5kZXQuPGJyPjxicj7imqDvuI8gRGFzIGlzdCBlaW5lIE7DpGhlcnVuZywga2VpbmUgZXhha3RlIFdhaHJzY2hlaW5saWNoa2VpdCEKV2llIHZlcsOkbmRlcnQgc2ljaCBkYXMgRGVsdGEgZWluZXIgQ2FsbC1PcHRpb24gamUgbmFjaCBNb25leW5lc3MgKE9UTSDihpIgQVRNIOKGkiBJVE0pPwk8ZGl2IGNsYXNzPSJtZXJtYWlkIj5mbG93Y2hhcnQgTFI7IE9UTVsiT1RNXG5EZWx0YSAwLjEw4oCTMC4zMCJdIC0tPnwiQWt0aWUgc3RlaWd0InwgQVRNWyJBVE1cbkRlbHRhIOKJiCAwLjUwIl07IEFUTSAtLT58IkFrdGllIHN0ZWlndCJ8IElUTVsiSVRNXG5EZWx0YSAwLjcw4oCTMS4wIl07IElUTSAtLT58IkFrdGllIGbDpGxsdCJ8IEFUTTsgQVRNIC0tPnwiQWt0aWUgZsOkbGx0InwgT1RNPC9kaXY+PGJyPkRlbHRhIDxiPnN0ZWlndDwvYj4sIGplIHdlaXRlciBlaW5lIENhbGwtT3B0aW9uIGlucyBHZWxkIChJVE0pIHLDvGNrdC48YnI+PHNtYWxsPjxpPkhpbndlaXM6IE1lcm1haWQuanMgbXVzcyBpbiBkZXIgS2FydGVudm9ybGFnZSBlaW5nZWJ1bmRlbiBzZWluLjwvaT48L3NtYWxsPgojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OkdhbW1hCkR1IGhhc3QgZWluZSBDYWxsLU9wdGlvbiBtaXQgPGI+RGVsdGEgPSAwLjUwPC9iPiB1bmQgPGI+R2FtbWEgPSAwLjA1PC9iPi48YnI+RGllIEFrdGllIHN0ZWlndCB1bSA8Yj4kMTwvYj4uPGJyPldhcyBpc3QgZGFzIG5ldWUgRGVsdGEgbmFjaCBkaWVzZXIgQmV3ZWd1bmc/CU5ldWVzIERlbHRhID0gPGI+MC41NTwvYj4gKD0gMC41MCArIDAuMDUpPGJyPjxicj5HYW1tYSBtaXNzdCwgd2llIHNjaG5lbGwgc2ljaCA8Yj5EZWx0YTwvYj4gYmVpIGVpbmVyICQxIEJld2VndW5nIGRlciBBa3RpZSDDpG5kZXJ0Ljxicj48YnI+8J+alyA8Yj5BbmFsb2dpZTo8L2I+IERlbHRhID0gR2VzY2h3aW5kaWdrZWl0IGRlcyBPcHRpb25zcHJlaXNlcy4gR2FtbWEgPSBCZXNjaGxldW5pZ3VuZy4KV2FubiBpc3QgZGFzIEdhbW1hIGVpbmVyIE9wdGlvbiBhbSBow7ZjaHN0ZW4/CUJlaSA8Yj5BVE0tT3B0aW9uZW4ga3VyeiB2b3IgZGVtIFZlcmZhbGxzZGF0dW08L2I+Ljxicj48YnI+V2FydW0/IEFUTS1PcHRpb25lbiDigJ5raXBwZW4iIGFtIHNjaG5lbGxzdGVuIHp3aXNjaGVuIElUTSB1bmQgT1RNIOKAlCBrdXJ6IHZvciBWZXJmYWxsIGlzdCBkaWVzZSBVbnNpY2hlcmhlaXQgYW0gZ3LDtsOfdGVuLjxicj48YnI+4pqg77iPIDxiPlJpc2lrbzo8L2I+IEhvaGVzIEdhbW1hID0gRGVsdGEgw6RuZGVydCBzaWNoIHNjaG5lbGwgPSBncm/Dn2Ugw5xiZXJyYXNjaHVuZ2VuIG3DtmdsaWNoIQpXaWUgaMOkbmdlbiBEZWx0YSB1bmQgR2FtbWEgenVzYW1tZW4/CTxkaXYgY2xhc3M9Im1lcm1haWQiPmZsb3djaGFydCBURDsgQUtbIkFrdGllIGJld2VndCBzaWNoICQxIl07IEdbIkdhbW1hID0gw4RuZGVydW5nc3JhdGVcbnZvbiBEZWx0YSJdOyBEWyJEZWx0YSB3aXJkIGFrdHVhbGlzaWVydCJdOyBQWyJPcHRpb25zcHJlaXMgw6RuZGVydCBzaWNoIl07IEFLIC0tPnwiRGVsdGEgYmVzdGltbXQifCBQOyBBSyAtLT58IkdhbW1hIGFrdHVhbGlzaWVydCJ8IEc7IEcgLS0+fCJuZXVlcyBEZWx0YSJ8IEQ7IEQgLS0+fCJiZXN0aW1tdCBQcmVpcyJ8IFA8L2Rpdj48YnI+8J+noCA8Yj5NZXJraGlsZmU6PC9iPiBHYW1tYSBpc3QgZGFzIOKAnlVwZGF0ZSIgZsO8ciBEZWx0YSBuYWNoIGplZGVyIEt1cnNiZXdlZ3VuZy48YnI+PHNtYWxsPjxpPkhpbndlaXM6IE1lcm1haWQuanMgbXVzcyBpbiBkZXIgS2FydGVudm9ybGFnZSBlaW5nZWJ1bmRlbiBzZWluLjwvaT48L3NtYWxsPgojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OlRoZXRhCkR1IGJlc2l0enQgZWluZSBDYWxsLU9wdGlvbi4gPGI+VGhldGEgPSDiiJIwLjA1PC9iPi48YnI+V2FzIHBhc3NpZXJ0IG1pdCBkZW0gT3B0aW9uc3ByZWlzLCB3ZW5uIGVpbiBUYWcgdmVyZ2VodCAob2huZSBLdXJzYmV3ZWd1bmcpPwlEZXIgT3B0aW9uc3ByZWlzIHNpbmt0IHVtIGNhLiA8Yj4kMC4wNTwvYj4g4oCUIGVpbmZhY2ggd2VpbCBlaW4gVGFnIHZlcmdhbmdlbiBpc3QuPGJyPjxicj5UaGV0YSBtaXNzdCBkZW4gPGI+dMOkZ2xpY2hlbiBaZWl0d2VydHZlcmx1c3Q8L2I+IGVpbmVyIE9wdGlvbi48YnI+PGJyPjx0YWJsZSBib3JkZXI9IjEiIGNlbGxwYWRkaW5nPSI1IiBzdHlsZT0iYm9yZGVyLWNvbGxhcHNlOmNvbGxhcHNlIj48dHI+PHRoPlBvc2l0aW9uPC90aD48dGg+VGhldGE8L3RoPjx0aD5CZWRldXR1bmc8L3RoPjwvdHI+PHRyPjx0ZD5PcHRpb25za8OkdWZlcjwvdGQ+PHRkPk5lZ2F0aXY8L3RkPjx0ZD5WZXJsaWVyc3QgdMOkZ2xpY2ggV2VydDwvdGQ+PC90cj48dHI+PHRkPk9wdGlvbnN2ZXJrw6R1ZmVyPC90ZD48dGQ+UG9zaXRpdjwvdGQ+PHRkPlNhbW1lbHN0IHTDpGdsaWNoIFByw6RtaWU8L3RkPjwvdHI+PC90YWJsZT4KV2FydW0gaXN0IGVzIHJpc2thbnQsIGVpbmUgT3B0aW9uIG1pdCBudXIgbm9jaCA8Yj4yIFdvY2hlbjwvYj4gYmlzIHp1bSBWZXJmYWxsIHp1IDxiPmthdWZlbjwvYj4/CVdlaWwgPGI+VGhldGEgKFplaXR2ZXJmYWxsKSBuYWhlIGRlbSBWZXJmYWxsc2RhdHVtIGFtIHN0w6Rya3N0ZW4gd2lya3Q8L2I+Ljxicj48YnI+RGVyIFplaXR3ZXJ0dmVybHVzdCBiZXNjaGxldW5pZ3Qgc2ljaCBleHBvbmVudGllbGwgaW4gZGVuIGxldHp0ZW4gV29jaGVuLiBFaW5lIEFUTS1PcHRpb24ga2FubiBpbSBsZXR6dGVuIE1vbmF0IG1laHIgV2VydCB2ZXJsaWVyZW4gYWxzIGluIGFsbGVuIHZvcmhlcmlnZW4gTW9uYXRlbiB6dXNhbW1lbi48YnI+PGJyPvCfk4UgPGI+RmF1c3RyZWdlbDo8L2I+IEplIHdlbmlnZXIgWmVpdCBiaXMgVmVyZmFsbCwgZGVzdG8gYWdncmVzc2l2ZXIgZnJpc3N0IFRoZXRhIGRlbiBPcHRpb25zd2VydC4KV2llIHZlcmzDpHVmdCBkZXIgWmVpdHdlcnQgZWluZXIgQVRNLU9wdGlvbiDDvGJlciBkaWUgWmVpdCBiaXMgenVtIFZlcmZhbGw/CTxiPlplaXR3ZXJ0IGbDpGxsdCBuaWNodCBsaW5lYXIg4oCUIFZlcmZhbGwgYmVzY2hsZXVuaWd0IHNpY2ggc3Rhcms6PC9iPjxicj48YnI+PHRhYmxlIGJvcmRlcj0iMSIgY2VsbHBhZGRpbmc9IjUiIHN0eWxlPSJib3JkZXItY29sbGFwc2U6Y29sbGFwc2UiPjx0cj48dGg+MTIgTW88L3RoPjx0aD4xMCBNbzwvdGg+PHRoPjggTW88L3RoPjx0aD42IE1vPC90aD48dGg+NCBNbzwvdGg+PHRoPjIgTW88L3RoPjx0aD4xIE1vPC90aD48dGg+VmVyZmFsbDwvdGg+PC90cj48dHI+PHRkPiQ1LjUwPC90ZD48dGQ+JDUuMDA8L3RkPjx0ZD4kNC4zMDwvdGQ+PHRkPiQzLjUwPC90ZD48dGQ+JDIuNTA8L3RkPjx0ZD4kMS41MDwvdGQ+PHRkPiQwLjgwPC90ZD48dGQ+JDA8L3RkPjwvdHI+PC90YWJsZT48YnI+SW4gZGVuIGxldHp0ZW4gMiBNb25hdGVuIHZlcmxpZXJ0IGRpZSBPcHRpb24gZ2VuYXVzbyB2aWVsIFplaXR3ZXJ0IHdpZSBpbiBkZW4gZXJzdGVuIDEwIE1vbmF0ZW4genVzYW1tZW4hPGJyPjxzbWFsbD48aT5Wb2xsc3TDpG5kaWdlcyBEaWFncmFtbSBpbiBjYXJkcy5tZCB2ZXJmw7xnYmFyLjwvaT48L3NtYWxsPgojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OlZlZ2EKV2FzIG1pc3N0IDxiPlZlZ2E8L2I+IGJlaSBlaW5lciBPcHRpb24/PGJyPkFuZ2Vub21tZW46IDxiPlZlZ2EgPSAwLjEwPC9iPiDigJQgd2FzIHBhc3NpZXJ0IHdlbm4gZGllIElWIHVtICsxJSBzdGVpZ3Q/CTxiPlZlZ2E8L2I+IG1pc3N0LCB3aWUgc3Rhcmsgc2ljaCBkZXIgT3B0aW9uc3ByZWlzIMOkbmRlcnQsIHdlbm4gZGllIDxiPmltcGxpeml0ZSBWb2xhdGlsaXTDpHQgKElWKTwvYj4gdW0gMSUgc3RlaWd0IG9kZXIgZsOkbGx0Ljxicj48YnI+QmVpc3BpZWwgbWl0IFZlZ2EgPSAwLjEwOjxicj48dWw+PGxpPklWIHN0ZWlndCArMSUg4oaSIE9wdGlvbnNwcmVpcyA8Yj4rJDAuMTA8L2I+PC9saT48bGk+SVYgZsOkbGx0IOKIkjElIOKGkiBPcHRpb25zcHJlaXMgPGI+4oiSJDAuMTA8L2I+PC9saT48L3VsPgpEdSBrYXVmc3QgZWluZSBDYWxsLU9wdGlvbiAoTG9uZykuPGJyPkRpZSBNYXJrdHZvbGF0aWxpdMOkdCAoSVYpIHN0ZWlndCBwbMO2dHpsaWNoIHN0YXJrIGFuLjxicj5XYXMgcGFzc2llcnQgbWl0IGRlbSBXZXJ0IGRlaW5lciBPcHRpb24/CURlciBPcHRpb25zd2VydCA8Yj5zdGVpZ3Q8L2I+IOKAlCBkdSBiaXN0IOKAnkxvbmcgVmVnYSIuPGJyPjxicj48dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNSIgc3R5bGU9ImJvcmRlci1jb2xsYXBzZTpjb2xsYXBzZSI+PHRyPjx0aD5Qb3NpdGlvbjwvdGg+PHRoPlZlZ2E8L3RoPjx0aD5Qcm9maXRpZXJ0IHZvbjwvdGg+PC90cj48dHI+PHRkPk9wdGlvbnNrw6R1ZmVyPC90ZD48dGQ+UG9zaXRpdiAoTG9uZyBWZWdhKTwvdGQ+PHRkPlN0ZWlnZW5kZXIgSVY8L3RkPjwvdHI+PHRyPjx0ZD5PcHRpb25zdmVya8OkdWZlcjwvdGQ+PHRkPk5lZ2F0aXYgKFNob3J0IFZlZ2EpPC90ZD48dGQ+RmFsbGVuZGVyIElWPC90ZD48L3RyPjwvdGFibGU+PGJyPvCfkqEgPGI+TWVya2hpbGZlOjwvYj4gSG9oZSBJViA9IG1laHIgQ2hhbmNlIGF1ZiBncm/Dn2UgQmV3ZWd1bmdlbiA9IE9wdGlvbmVuIHdlcnR2b2xsZXIg4oaSIEvDpHVmZXIgcHJvZml0aWVydC4KQmVpIHdlbGNoZW4gT3B0aW9uZW4gaXN0IFZlZ2EgYW0gaMO2Y2hzdGVuPwlCZWkgPGI+QVRNLU9wdGlvbmVuIG1pdCBsYW5nZXIgUmVzdGxhdWZ6ZWl0PC9iPiAoei5CLiBMRUFQcyBtaXQgNuKAkzEyIE1vbmF0ZW4pLjxicj48YnI+V2FydW0/PGJyPjx1bD48bGk+PGI+QVRNOjwvYj4gTWF4aW1hbGUgVW5zaWNoZXJoZWl0IOKGkiBJViBoYXQgZ3LDtsOfdGVuIEVpbmZsdXNzPC9saT48bGk+PGI+TGFuZ2UgTGF1ZnplaXQ6PC9iPiBNZWhyIFplaXQgZsO8ciBWb2xhdGlsaXTDpHRzw6RuZGVydW5nZW4g4oaSIHN0w6Rya2VyZSBBdXN3aXJrdW5nPC9saT48L3VsPjxicj7wn5OMIDxiPlByYWt0aXNjaDo8L2I+IEVpbiBMRUFQIGJlaSArNSUgSVYga2FubiBkZXV0bGljaCBpbSBQcmVpcyBzdGVpZ2VuLCBvaG5lIGRhc3Mgc2ljaCBkaWUgQWt0aWUgYmV3ZWd0LgojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OsOcYmVyc2ljaHQKTmVubmUgZGllIHZpZXIgd2ljaHRpZ3N0ZW4gT3B0aW9ucy1HcmVla3MgdW5kIHdhcyBzaWUgamV3ZWlscyBtZXNzZW4uCTx0YWJsZSBib3JkZXI9IjEiIGNlbGxwYWRkaW5nPSI1IiBzdHlsZT0iYm9yZGVyLWNvbGxhcHNlOmNvbGxhcHNlIj48dHI+PHRoPkdyZWVrPC90aD48dGg+U3ltYm9sPC90aD48dGg+TWlzc3TigKY8L3RoPjx0aD5CZWVpbmZsdXNzdCBkdXJjaDwvdGg+PC90cj48dHI+PHRkPkRlbHRhPC90ZD48dGQ+zpQ8L3RkPjx0ZD5QcmVpc8OkbmRlcnVuZyBwcm8gJDEgQWt0aWVuYmV3ZWd1bmc8L3RkPjx0ZD5Ba3RpZW5rdXJzPC90ZD48L3RyPjx0cj48dGQ+R2FtbWE8L3RkPjx0ZD7OkzwvdGQ+PHRkPsOEbmRlcnVuZ3NyYXRlIHZvbiBEZWx0YTwvdGQ+PHRkPkFrdGllbmt1cnM8L3RkPjwvdHI+PHRyPjx0ZD5UaGV0YTwvdGQ+PHRkPs6YPC90ZD48dGQ+VMOkZ2xpY2hlciBaZWl0d2VydHZlcmx1c3Q8L3RkPjx0ZD5aZWl0PC90ZD48L3RyPjx0cj48dGQ+VmVnYTwvdGQ+PHRkPlY8L3RkPjx0ZD5TZW5zaXRpdml0w6R0IGdnw7wuIFZvbGF0aWxpdMOkdDwvdGQ+PHRkPkltcGxpeml0ZSBWb2xhdGlsaXTDpHQ8L3RkPjwvdHI+PC90YWJsZT48YnI+8J+noCA8Yj5Fc2Vsc2Jyw7xja2U6PC9iPiA8Yj5EPC9iPmVpbiA8Yj5HPC9iPmV3aW5uIDxiPlQ8L2I+csOkdW10IDxiPlY8L2I+b24gKERlbHRhLCBHYW1tYSwgVGhldGEsIFZlZ2EpCldlbGNoZSBNYXJrdGZha3RvcmVuIGJlZWluZmx1c3NlbiBkZW4gT3B0aW9uc3ByZWlzIOKAlCB1bmQgd2VsY2hlciBHcmVlayBtaXNzdCBkZW4gamV3ZWlsaWdlbiBFaW5mbHVzcz8JPGRpdiBjbGFzcz0ibWVybWFpZCI+Zmxvd2NoYXJ0IFREOyBBS1siQWt0aWVua3VycyDDpG5kZXJ0IHNpY2giXTsgRFsiRGVsdGEgd2lyZCBhbmdlcGFzc3QiXTsgVElbIlplaXQgdmVyZ2VodCJdOyBJVlsiSW1wbGl6aXRlIFZvbGF0aWxpdMOkdCJdOyBQWyJPcHRpb25zcHJlaXMiXTsgQUsgLS0+fCJEZWx0YSDOlCJ8IFA7IEFLIC0tPnwiR2FtbWEgzpMifCBEOyBEIC0tPiBQOyBUSSAtLT58IlRoZXRhIM6YInwgUDsgSVYgLS0+fCJWZWdhIFYifCBQPC9kaXY+PGJyPjxiPlZpZXIgR3JlZWtzIOKAlCB2aWVyIE1hcmt0ZmFrdG9yZW46PC9iPjxicj48dWw+PGxpPjxiPs6UIERlbHRhOjwvYj4gQWt0aWVua3VycyAoZGlyZWt0ZSBXaXJrdW5nKTwvbGk+PGxpPjxiPs6TIEdhbW1hOjwvYj4gQWt0dWFsaXNpZXJ0IERlbHRhIG5hY2ggQmV3ZWd1bmc8L2xpPjxsaT48Yj7OmCBUaGV0YTo8L2I+IFplaXQgKHTDpGdsaWNoZXIgVmVybHVzdCk8L2xpPjxsaT48Yj5WIFZlZ2E6PC9iPiBJbXBsaXppdGUgVm9sYXRpbGl0w6R0PC9saT48L3VsPjxicj48c21hbGw+PGk+SGlud2VpczogTWVybWFpZC5qcyBtdXNzIGluIGRlciBLYXJ0ZW52b3JsYWdlIGVpbmdlYnVuZGVuIHNlaW4uPC9pPjwvc21hbGw+CiNub3RldHlwZTpDbG96ZQojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OkRlbHRhCkRlbHRhIG1pc3N0IGRpZSA8Yj5QcmVpc8OkbmRlcnVuZyBkZXIgT3B0aW9uPC9iPiBwcm8gJDEge3tjMTo6S3Vyc8OkbmRlcnVuZyBkZXIgQWt0aWV9fS4gQ2FsbHMgaGFiZW4gaW1tZXIgZWluIHt7YzI6OnBvc2l0aXZlc319IERlbHRhICgwIGJpcyAxKS4gUHV0cyBoYWJlbiBpbW1lciBlaW4ge3tjMzo6bmVnYXRpdmVzfX0gRGVsdGEgKOKIkjEgYmlzIDApLiBFaW5lIEFUTS1PcHRpb24gaGF0IERlbHRhIOKJiCB7e2M0OjrCsTAuNTB9fS4JRGVsdGE6IFByZWlzLVNlbnNpdGl2aXTDpHQgZ2VnZW7DvGJlciBBa3RpZW5rdXJzYmV3ZWd1bmdlbgojZGVjazpPcHRpb25lbjo6R3JpZWNoZW46OkdhbW1hCkdhbW1hIG1pc3N0IGRpZSB7e2MxOjrDhG5kZXJ1bmdzcmF0ZSB2b24gRGVsdGF9fSBwcm8gJDEgQmV3ZWd1bmcgZGVyIEFrdGllLiBHYW1tYSBpc3QgYW0gaMO2Y2hzdGVuIGJlaSB7e2MyOjpBVE0tT3B0aW9uZW4gbmFoZSBkZW0gVmVyZmFsbHNkYXR1bX19LiBBbHMgT3B0aW9uc2vDpHVmZXIgaGFzdCBkdSB7e2MzOjpwb3NpdGl2ZXN9fSBHYW1tYSAocHJvZml0aWVyc3Qgdm9uIGdyb8OfZW4gQmV3ZWd1bmdlbikuIEFscyBPcHRpb25zdmVya8OkdWZlciBoYXN0IGR1IHt7YzQ6Om5lZ2F0aXZlc319IEdhbW1hIChncm/Dn2UgQmV3ZWd1bmdlbiBzY2hhZGVuIGRpcikuCUdhbW1hOiDigJ5CZXNjaGxldW5pZ3VuZyIgZGVzIE9wdGlvbnNwcmVpc2VzCiNkZWNrOk9wdGlvbmVuOjpHcmllY2hlbjo6VGhldGEKVGhldGEgaXN0IGZhc3QgaW1tZXIge3tjMTo6bmVnYXRpdn19IGbDvHIgZGVuIE9wdGlvbnNrw6R1ZmVyLCB3ZWlsIGRlciBaZWl0d2VydCB7e2MyOjp0w6RnbGljaCBhYm5pbW10fX0uIERlciBaZWl0dmVyZmFsbCBiZXNjaGxldW5pZ3Qgc2ljaCB7e2MzOjpuYWhlIGRlbSBWZXJmYWxsc2RhdHVtfX0uIE9wdGlvbnN2ZXJrw6R1ZmVyIHByb2ZpdGllcmVuIHZvbiB7e2M0Ojpwb3NpdGl2ZW0gVGhldGF9fSAoc2llIGthc3NpZXJlbiBkZW4gWmVpdHdlcnQpLglUaGV0YTogVMOkZ2xpY2hlciBaZWl0d2VydHZlcmx1c3QKI2RlY2s6T3B0aW9uZW46OkdyaWVjaGVuOjpWZWdhClZlZ2EgbWlzc3QgZGllIFNlbnNpdGl2aXTDpHQgZGVzIE9wdGlvbnNwcmVpc2VzIGdlZ2Vuw7xiZXIge3tjMTo6aW1wbGl6aXRlciBWb2xhdGlsaXTDpHQgKElWKX19LiBXZW5uIElWIHN0ZWlndCwgcHJvZml0aWVyZW4ge3tjMjo6T3B0aW9uc2vDpHVmZXIgKExvbmcgVmVnYSl9fS4gV2VubiBJViBmw6RsbHQsIHByb2ZpdGllcmVuIHt7YzM6Ok9wdGlvbnN2ZXJrw6R1ZmVyIChTaG9ydCBWZWdhKX19LiBWZWdhIGlzdCBhbSBow7ZjaHN0ZW4gYmVpIHt7YzQ6OkFUTS1PcHRpb25lbiBtaXQgbGFuZ2VyIFJlc3RsYXVmemVpdH19LglWZWdhOiBJVi1TZW5zaXRpdml0w6R0IGRlcyBPcHRpb25zcHJlaXNlcwo="}], "grading": {"expectations": [{"text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A TSV export section with #separator:tab and #html:true headers is present", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Cards are written in German (German terms and explanations)", "passed": true, "evidence": "Auto-graded: PASS"}]}}, {"id": "eval-1-greeks-without_skill", "prompt": "Ich lerne gerade Optionshandel und habe die Greeks noch nicht wirklich verstanden. Erstelle mir Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega \u2014 auf Deutsch. Ich bin Anf\u00e4nger, also bitte mit guten Erkl\u00e4rungen und Beispielen. Wenn ein Diagramm helfen w\u00fcrde, f\u00fcge es ein.", "eval_id": 1, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki-Karten: Options Greeks auf Deutsch (Anf\u00e4nger)\n\n> **Lernziel:** Delta, Gamma, Theta und Vega verstehen \u2014 mit Beispielen und Diagrammen.\n\n---\n\n## \u00dcbersicht: Die vier wichtigsten Greeks\n\n```mermaid\nmindmap\n  root((Options Greeks))\n    Delta\n      Preissensitivit\u00e4t\n      0 bis 1 bei Calls\n      -1 bis 0 bei Puts\n    Gamma\n      \u00c4nderung von Delta\n      H\u00f6chste bei ATM\n      Steigt nahe Verfall\n    Theta\n      Zeitwertverlust\n      T\u00e4glich negativ\n      Beschleunigt am Verfall\n    Vega\n      Volatilit\u00e4tssensitivit\u00e4t\n      Positiv f\u00fcr K\u00e4ufer\n      Hoch bei langer Laufzeit\n```\n\n---\n\n## DELTA (\u0394)\n\n---\n\n### Karte D-1\n**Vorderseite:** Was ist Delta bei einer Option?\n\n**R\u00fcckseite:**\n\nDelta misst, wie stark sich der **Preis einer Option \u00e4ndert**, wenn sich der Kurs des Basiswerts um **1 \u20ac (oder 1 Einheit)** bewegt.\n\n| Option | Delta-Bereich |\n|--------|--------------|\n| Call (Kaufoption) | 0 bis +1 |\n| Put (Verkaufsoption) | \u22121 bis 0 |\n\n**Merksatz:** Delta ist wie das \"Gaspedal\" der Option \u2014 es zeigt, wie sensibel die Option auf Kursbewegungen reagiert.\n\n---\n\n### Karte D-2\n**Vorderseite:** Eine Call-Option hat Delta = 0,6. Die Aktie steigt um 2 \u20ac. Wie \u00e4ndert sich der Optionspreis (n\u00e4herungsweise)?\n\n**R\u00fcckseite:**\n\n**Formel:** Preis\u00e4nderung \u2248 Delta \u00d7 Kurs\u00e4nderung\n\n$$\\Delta P \\approx \\delta \\times \\Delta S = 0{,}6 \\times 2\\,\u20ac = 1{,}20\\,\u20ac$$\n\nDer Call-Preis steigt um **~1,20 \u20ac**.\n\n> F\u00e4llt die Aktie um 2 \u20ac, f\u00e4llt der Call um ~1,20 \u20ac.\n\n---\n\n### Karte D-3\n**Vorderseite:** Welche Delta-Werte haben ITM-, ATM- und OTM-Optionen?\n\n**R\u00fcckseite:**\n\n```mermaid\ngraph LR\n    A[\"Deep OTM<br/>Delta \u2248 0\"] --> B[\"ATM (am Geld)<br/>Delta \u2248 0,5\"]\n    B --> C[\"Deep ITM<br/>Delta \u2248 1\"]\n    style A fill:#ffcccc\n    style B fill:#ffffcc\n    style C fill:#ccffcc\n```\n\n| Lage | Call-Delta | Beschreibung |\n|------|-----------|-------------|\n| Deep OTM | \u2248 0,05\u20130,20 | Kaum Reaktion auf Kursbewegungen |\n| ATM | \u2248 0,50 | Mittlere Reaktion |\n| Deep ITM | \u2248 0,80\u20131,00 | Verh\u00e4lt sich fast wie die Aktie selbst |\n\n> F\u00fcr Puts: gleiches Muster, aber mit negativem Vorzeichen (\u22121 bis 0).\n\n---\n\n### Karte D-4\n**Vorderseite:** Was sagt Delta \u00fcber die Wahrscheinlichkeit des Verfalls im Geld (In-the-Money)?\n\n**R\u00fcckseite:**\n\nDelta kann als **grobe Wahrscheinlichkeit** interpretiert werden, dass eine Option am Verfallstag im Geld liegt:\n\n- Delta 0,70 \u2192 ~70 % Wahrscheinlichkeit ITM\n- Delta 0,50 \u2192 ~50 % (typisch f\u00fcr ATM-Optionen)\n- Delta 0,20 \u2192 ~20 % Wahrscheinlichkeit ITM\n\n> **Beispiel:** Du kaufst einen OTM-Call mit Delta 0,25. Das bedeutet: nur ~25 % Chance, dass er am Ende etwas wert ist \u2014 daf\u00fcr ist er billiger!\n\n---\n\n## GAMMA (\u0393)\n\n---\n\n### Karte G-1\n**Vorderseite:** Was ist Gamma bei einer Option?\n\n**R\u00fcckseite:**\n\nGamma misst, **wie schnell sich Delta \u00e4ndert**, wenn sich der Kurs des Basiswerts um 1 \u20ac bewegt.\n\n$$\\text{Gamma} = \\frac{\\Delta \\text{(neues Delta)} - \\Delta \\text{(altes Delta)}}{\\text{Kurs\u00e4nderung}}$$\n\n**Einfach gesagt:** Gamma ist das \"Delta des Deltas\" \u2014 die Beschleunigung der Option.\n\n- Gamma ist **immer positiv** f\u00fcr K\u00e4ufer (Long-Positionen)\n- Gamma ist **immer negativ** f\u00fcr Verk\u00e4ufer (Short-Positionen)\n\n---\n\n### Karte G-2\n**Vorderseite:** Eine Call-Option hat Delta = 0,5 und Gamma = 0,1. Die Aktie steigt um 1 \u20ac. Was ist das neue Delta?\n\n**R\u00fcckseite:**\n\n**Formel:** Neues Delta = Altes Delta + Gamma \u00d7 Kurs\u00e4nderung\n\n$$\\delta_{\\text{neu}} = 0{,}5 + 0{,}1 \\times 1 = 0{,}6$$\n\nNach einem **weiteren \u20ac1-Anstieg:**\n$$\\delta_{\\text{neu}} = 0{,}6 + 0{,}1 \\times 1 = 0{,}7$$\n\n```mermaid\ngraph LR\n    A[\"Aktie bei 100\u20ac<br/>Delta = 0,5\"] -->|\"+1\u20ac\"| B[\"Aktie bei 101\u20ac<br/>Delta = 0,6\"]\n    B -->|\"+1\u20ac\"| C[\"Aktie bei 102\u20ac<br/>Delta = 0,7\"]\n```\n\nGamma sorgt daf\u00fcr, dass Long-Optionsk\u00e4ufer **\u00fcberproportional** von starken Kursbewegungen profitieren!\n\n---\n\n### Karte G-3\n**Vorderseite:** Wann ist Gamma am gr\u00f6\u00dften?\n\n**R\u00fcckseite:**\n\nGamma ist **am h\u00f6chsten** bei:\n1. **ATM-Optionen** (am Geld)\n2. **Kurz vor dem Verfallstag**\n\n**Warum?** Weil kleine Kursbewegungen dann entscheidend sind \u2014 ob die Option im Geld verf\u00e4llt oder nicht.\n\n```mermaid\ngraph TD\n    A[\"Weit vom Verfall<br/>Gamma: moderat\"] --> B[\"Nahe am Verfall<br/>Gamma: sehr hoch\"]\n    C[\"OTM oder ITM<br/>Gamma: niedriger\"] --> D[\"ATM<br/>Gamma: am h\u00f6chsten\"]\n```\n\n> **F\u00fcr K\u00e4ufer:** Hohes Gamma = Chance auf schnelle Gewinne bei starken Bewegungen  \n> **F\u00fcr Verk\u00e4ufer:** Hohes Gamma = hohes Risiko bei gro\u00dfen Kursbewegungen\n\n---\n\n## THETA (\u0398)\n\n---\n\n### Karte T-1\n**Vorderseite:** Was ist Theta bei einer Option?\n\n**R\u00fcckseite:**\n\nTheta misst den **t\u00e4glichen Wertverlust einer Option** durch den blo\u00dfen Ablauf der Zeit \u2014 auch **Zeitwertverlust** oder auf Englisch \"time decay\" genannt.\n\n- Theta ist f\u00fcr **K\u00e4ufer** (Long) fast immer **negativ**\n- Theta ist f\u00fcr **Verk\u00e4ufer** (Short) fast immer **positiv**\n\n**Beispiel:** Theta = \u22120,05  \n\u2192 Die Option verliert jeden Tag ~**0,05 \u20ac** an Wert, selbst wenn sich der Kurs nicht bewegt.\n\n---\n\n### Karte T-2\n**Vorderseite:** Wer profitiert von Theta \u2014 K\u00e4ufer oder Verk\u00e4ufer der Option?\n\n**R\u00fcckseite:**\n\n```mermaid\ngraph LR\n    A[\"\u23f1\ufe0f Zeit vergeht\"] --> B[\"Optionsk\u00e4ufer<br/>\u274c verliert Wert<br/>Theta negativ\"]\n    A --> C[\"Optionsverk\u00e4ufer<br/>\u2705 gewinnt Wert<br/>Theta positiv\"]\n```\n\n**Merksatz:** Optionsverk\u00e4ufer sind wie Versicherungen \u2014 sie kassieren Pr\u00e4mien und hoffen, dass \"nichts passiert\" (kein gro\u00dfer Kursbewegung).\n\n**Zeitarbeitet...**\n- **gegen** den K\u00e4ufer (Long)\n- **f\u00fcr** den Verk\u00e4ufer (Short)\n\n---\n\n### Karte T-3\n**Vorderseite:** Wie ver\u00e4ndert sich die Theta-Kurve (Zeitwertverlust) im Laufe der Optionslaufzeit?\n\n**R\u00fcckseite:**\n\nDer Zeitwertverlust **beschleunigt sich exponentiell** je n\u00e4her der Verfallstag r\u00fcckt:\n\n```\nZeitwert\n   |\n   |\u2588\u2588\u2588\u2588\n   |    \u2588\u2588\u2588\u2588\n   |        \u2588\u2588\u2588\u2588\n   |            \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n   +---------------------------------> Zeit bis Verfall\n Verfall   30T    60T    90T    180T\n```\n\n**Faustregel:** In den **letzten 30 Tagen** vor Verfall f\u00e4llt der Zeitwert einer ATM-Option besonders schnell.\n\n> Ein Optionsk\u00e4ufer sollte sich dieser Kurve bewusst sein \u2014 je l\u00e4nger man wartet, desto mehr kostet der Zeitverlauf!\n\n---\n\n### Karte T-4\n**Vorderseite:** Welche Strategien nutzen Theta (Zeitwertverlust) bewusst aus?\n\n**R\u00fcckseite:**\n\n**Theta-positive Strategien (Verk\u00e4uferstrategien):**\n- **Covered Call:** Aktie halten, Call verkaufen \u2192 kassiert Pr\u00e4mie t\u00e4glich\n- **Cash-Secured Put:** Put verkaufen \u2192 kassiert Pr\u00e4mie t\u00e4glich\n- **Iron Condor:** Mehrere Optionen verkaufen \u2192 maximiert Theta-Einnahmen\n\n**Theta-negative Strategien (K\u00e4uferstrategien):**\n- **Long Call / Long Put:** Muss darauf achten, dass die Kursrichtung schnell eintrifft\n\n> **Merksatz:** \"Theta sammeln\" = Optionen verkaufen und Zeit f\u00fcr sich arbeiten lassen.\n\n---\n\n## VEGA (\u03bd)\n\n---\n\n### Karte V-1\n**Vorderseite:** Was ist Vega bei einer Option?\n\n**R\u00fcckseite:**\n\nVega misst, wie stark sich der **Optionspreis \u00e4ndert**, wenn sich die **implizite Volatilit\u00e4t (IV)** um **1 Prozentpunkt** \u00e4ndert.\n\n- Vega ist f\u00fcr K\u00e4ufer **positiv** (mehr Volatilit\u00e4t = teurer)\n- Vega ist f\u00fcr Verk\u00e4ufer **negativ** (mehr Volatilit\u00e4t = schlechter)\n\n**Beispiel:** Vega = 0,20  \n\u2192 Steigt die IV um 1 %, steigt der Optionspreis um ~**0,20 \u20ac**\n\n---\n\n### Karte V-2\n**Vorderseite:** Was ist \"implizite Volatilit\u00e4t\" (IV) und warum ist sie f\u00fcr Optionen wichtig?\n\n**R\u00fcckseite:**\n\n**Implizite Volatilit\u00e4t (IV)** ist die Markterwartung \u00fcber die **zuk\u00fcnftige Schwankungsbreite** des Basiswerts \u2014 ausgedr\u00fcckt als Prozentzahl.\n\n```mermaid\ngraph LR\n    A[\"Markt ist ruhig<br/>IV niedrig (z.B. 15%)\"] --> B[\"Optionen sind g\u00fcnstig\"]\n    C[\"Markt ist nerv\u00f6s<br/>IV hoch (z.B. 40%)\"] --> D[\"Optionen sind teuer\"]\n```\n\n> **Merksatz:** Wer billig kauft und teuer verkauft, muss auf die IV achten \u2014 nicht nur auf die Kursrichtung!\n\n---\n\n### Karte V-3\n**Vorderseite:** Eine Option hat Vega = 0,25. Die implizite Volatilit\u00e4t steigt von 20% auf 23%. Wie \u00e4ndert sich der Optionspreis?\n\n**R\u00fcckseite:**\n\n**Formel:** Preis\u00e4nderung \u2248 Vega \u00d7 \u00c4nderung der IV\n\n$$\\Delta P \\approx 0{,}25 \\times 3 = 0{,}75\\,\u20ac$$\n\nDer Optionspreis steigt um **~0,75 \u20ac**.\n\n> Sinkt die IV um 3%, f\u00e4llt der Optionspreis um ~0,75 \u20ac \u2014 auch wenn sich der Aktienkurs gar nicht bewegt hat! Dieses Ph\u00e4nomen hei\u00dft **\"Vega-Crush\"** (z.B. nach Earnings).\n\n---\n\n### Karte V-4\n**Vorderseite:** Bei welchen Optionen ist Vega besonders hoch oder niedrig?\n\n**R\u00fcckseite:**\n\n**Vega ist hoch bei:**\n| Eigenschaft | Warum? |\n|-------------|--------|\n| Langer Restlaufzeit (LEAPS, 6\u201312 Monate) | Mehr Zeit = mehr Einfluss der Volatilit\u00e4t |\n| ATM-Optionen | Maximale Unsicherheit \u00fcber den Ausgang |\n\n**Vega ist niedrig bei:**\n- Sehr kurz laufenden Optionen (wenige Tage)\n- Deep ITM oder Deep OTM Optionen\n\n> **Praxistipp:** Wer Optionen kurz vor einem gro\u00dfen Ereignis (z.B. Quartalszahlen) kauft, zahlt einen hohen IV-Aufschlag. Nach dem Ereignis f\u00e4llt die IV oft schlagartig \u2192 der Optionspreis sinkt, **obwohl** die Aktie sich in die richtige Richtung bewegt hat!\n\n---\n\n## Zusammenfassung: Greeks auf einen Blick\n\n| Greek | Misst | Positiv f\u00fcr K\u00e4ufer? | Schl\u00fcsselwort |\n|-------|-------|---------------------|---------------|\n| **\u0394 Delta** | Preis\u00e4nderung bei Kursbewegung | Ja (Call) / Nein (Put) | Preissensitivit\u00e4t |\n| **\u0393 Gamma** | \u00c4nderung von Delta | Ja | Kr\u00fcmmung / Beschleunigung |\n| **\u0398 Theta** | T\u00e4glicher Zeitwertverlust | Nein | Zeit = Feind des K\u00e4ufers |\n| **\u03bd Vega** | \u00c4nderung durch Volatilit\u00e4ts\u00e4nderung | Ja | Volatilit\u00e4tssensitivit\u00e4t |\n\n---\n\n*Erstellt f\u00fcr Anf\u00e4nger im Optionshandel \u2014 Deutsch*\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,I3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6QmFzaWMKI2RlY2s6T3B0aW9uc2hhbmRlbDo6R3JlZWtzClZvcmRlcnNlaXRlCVLDvGNrc2VpdGUJVGFncwpXYXMgaXN0IDxiPkRlbHRhICjOlCk8L2I+IGJlaSBlaW5lciBPcHRpb24/CTxiPkRlbHRhPC9iPiBtaXNzdCwgd2llIHN0YXJrIHNpY2ggZGVyIDxiPlByZWlzIGVpbmVyIE9wdGlvbiDDpG5kZXJ0PC9iPiwgd2VubiBzaWNoIGRlciBLdXJzIGRlcyBCYXNpc3dlcnRzIHVtIDxiPjEg4oKsIGJld2VndDwvYj4uPGJyPjxicj7igKIgQ2FsbC1PcHRpb246IERlbHRhIHp3aXNjaGVuIDxiPjAgdW5kICsxPC9iPjxicj7igKIgUHV0LU9wdGlvbjogRGVsdGEgendpc2NoZW4gPGI+4oiSMSB1bmQgMDwvYj48YnI+PGJyPjxiPk1lcmtzYXR6OjwvYj4gRGVsdGEgaXN0IHdpZSBkYXMg4oCeR2FzcGVkYWwiIGRlciBPcHRpb24g4oCUIGVzIHplaWd0LCB3aWUgc2Vuc2liZWwgZGllIE9wdGlvbiBhdWYgS3Vyc2Jld2VndW5nZW4gcmVhZ2llcnQuCURlbHRhIEdydW5kbGFnZW4KRWluZSBDYWxsLU9wdGlvbiBoYXQgRGVsdGEgPSAwLDYuIERpZSBBa3RpZSBzdGVpZ3QgdW0gMiDigqwuIFVtIHdpZSB2aWVsIMOkbmRlcnQgc2ljaCBkZXIgT3B0aW9uc3ByZWlzIChuw6RoZXJ1bmdzd2Vpc2UpPwk8Yj5Gb3JtZWw6PC9iPiBQcmVpc8OkbmRlcnVuZyDiiYggRGVsdGEgw5cgS3Vyc8OkbmRlcnVuZzxicj48YnI+PSAwLDYgw5cgMiDigqwgPSA8Yj4xLDIwIOKCrDwvYj48YnI+PGJyPkRlciBDYWxsLVByZWlzIHN0ZWlndCB1bSB+MSwyMCDigqwuPGJyPjxicj48aT5Gw6RsbHQgZGllIEFrdGllIHVtIDIg4oKsLCBmw6RsbHQgZGVyIENhbGwgdW0gfjEsMjAg4oKsLjwvaT4JRGVsdGEgUmVjaG51bmcKV2VsY2hlIERlbHRhLVdlcnRlIGhhYmVuIElUTS0sIEFUTS0gdW5kIE9UTS1DYWxsLU9wdGlvbmVuPwk8dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNCI+PHRyPjx0aD5MYWdlPC90aD48dGg+Q2FsbC1EZWx0YTwvdGg+PC90cj48dHI+PHRkPkRlZXAgT1RNICh3ZWl0IGF1cyBkZW0gR2VsZCk8L3RkPjx0ZD7iiYggMCwwNeKAkzAsMjA8L3RkPjwvdHI+PHRyPjx0ZD5BVE0gKGFtIEdlbGQpPC90ZD48dGQ+4omIIDAsNTA8L3RkPjwvdHI+PHRyPjx0ZD5EZWVwIElUTSAodGllZiBpbSBHZWxkKTwvdGQ+PHRkPuKJiCAwLDgw4oCTMSwwMDwvdGQ+PC90cj48L3RhYmxlPjxicj48Yj5Gw7xyIFB1dHM6PC9iPiBHbGVpY2hlcyBNdXN0ZXIsIGFiZXIgbmVnYXRpdmVzIFZvcnplaWNoZW4gKOKIkjEgYmlzIDApLglEZWx0YSBJVE0tQVRNLU9UTQpXYXMgc2FndCBEZWx0YSDDvGJlciBkaWUgPGI+V2FocnNjaGVpbmxpY2hrZWl0PC9iPiBhdXMsIGRhc3MgZWluZSBPcHRpb24gYW0gVmVyZmFsbCBpbSBHZWxkIChJVE0pIGxpZWd0PwlEZWx0YSBrYW5uIGFscyA8Yj5ncm9iZSBXYWhyc2NoZWlubGljaGtlaXQ8L2I+IGludGVycHJldGllcnQgd2VyZGVuLCBkYXNzIGVpbmUgT3B0aW9uIGFtIFZlcmZhbGxzdGFnIGltIEdlbGQgbGllZ3Q6PGJyPjxicj7igKIgRGVsdGEgMCw3MCDihpIgfjcwJSBXYWhyc2NoZWlubGljaGtlaXQgSVRNPGJyPuKAoiBEZWx0YSAwLDUwIOKGkiB+NTAlICh0eXBpc2NoIEFUTSk8YnI+4oCiIERlbHRhIDAsMjAg4oaSIH4yMCUgV2FocnNjaGVpbmxpY2hrZWl0IElUTTxicj48YnI+PGI+QmVpc3BpZWw6PC9iPiBPVE0tQ2FsbCBtaXQgRGVsdGEgMCwyNSA9IG51ciB+MjUlIENoYW5jZSBhdWYgR2V3aW5uLCBhYmVyIGRhZsO8ciBnw7xuc3RpZ2VyIGluIGRlciBQcsOkbWllLglEZWx0YSBXYWhyc2NoZWlubGljaGtlaXQKV2FzIGlzdCA8Yj5HYW1tYSAozpMpPC9iPiBiZWkgZWluZXIgT3B0aW9uPwk8Yj5HYW1tYTwvYj4gbWlzc3QsIHdpZSBzY2huZWxsIHNpY2ggPGI+RGVsdGEgw6RuZGVydDwvYj4sIHdlbm4gc2ljaCBkZXIgS3VycyBkZXMgQmFzaXN3ZXJ0cyB1bSAxIOKCrCBiZXdlZ3QuPGJyPjxicj5HYW1tYSA9IMOEbmRlcnVuZyB2b24gRGVsdGEgw7cgS3Vyc8OkbmRlcnVuZzxicj48YnI+PGI+RWluZmFjaCBnZXNhZ3Q6PC9iPiBHYW1tYSBpc3QgZGFzIOKAnkRlbHRhIGRlcyBEZWx0YXMiIOKAlCBkaWUgQmVzY2hsZXVuaWd1bmcgZGVyIE9wdGlvbi48YnI+PGJyPuKAoiBHYW1tYSBpc3QgZsO8ciBLw6R1ZmVyIChMb25nKSBpbW1lciA8Yj5wb3NpdGl2PC9iPjxicj7igKIgR2FtbWEgaXN0IGbDvHIgVmVya8OkdWZlciAoU2hvcnQpIGltbWVyIDxiPm5lZ2F0aXY8L2I+CUdhbW1hIEdydW5kbGFnZW4KRWluZSBDYWxsLU9wdGlvbiBoYXQgRGVsdGEgPSAwLDUgdW5kIEdhbW1hID0gMCwxLiBEaWUgQWt0aWUgc3RlaWd0IHVtIDEg4oKsLiBXYXMgaXN0IGRhcyBuZXVlIERlbHRhPwk8Yj5Gb3JtZWw6PC9iPiBOZXVlcyBEZWx0YSA9IEFsdGVzIERlbHRhICsgR2FtbWEgw5cgS3Vyc8OkbmRlcnVuZzxicj48YnI+PSAwLDUgKyAwLDEgw5cgMSA9IDxiPjAsNjwvYj48YnI+PGJyPk5hY2ggZWluZW0gd2VpdGVyZW4g4oKsMS1BbnN0aWVnOjxicj49IDAsNiArIDAsMSDDlyAxID0gPGI+MCw3PC9iPjxicj48YnI+R2FtbWEgc29yZ3QgZGFmw7xyLCBkYXNzIExvbmctT3B0aW9uc2vDpHVmZXIgPGI+w7xiZXJwcm9wb3J0aW9uYWw8L2I+IHZvbiBzdGFya2VuIEt1cnNiZXdlZ3VuZ2VuIHByb2ZpdGllcmVuIQlHYW1tYSBSZWNobnVuZwpXYW5uIGlzdCBHYW1tYSBlaW5lciBPcHRpb24gPGI+YW0gZ3LDtsOfdGVuPC9iPj8JR2FtbWEgaXN0IGFtIGjDtmNoc3RlbiBiZWk6PGJyPjxicj4xLiA8Yj5BVE0tT3B0aW9uZW48L2I+IChhbSBHZWxkKTxicj4yLiA8Yj5LdXJ6IHZvciBkZW0gVmVyZmFsbHN0YWc8L2I+PGJyPjxicj5XYXJ1bT8gS2xlaW5lIEt1cnNiZXdlZ3VuZ2VuIHNpbmQgZGFubiBlbnRzY2hlaWRlbmQg4oCUIG9iIGRpZSBPcHRpb24gaW0gR2VsZCB2ZXJmw6RsbHQgb2RlciBuaWNodC48YnI+PGJyPuKAoiBGw7xyIEvDpHVmZXI6IEhvaGVzIEdhbW1hID0gQ2hhbmNlIGF1ZiBzY2huZWxsZSBHZXdpbm5lPGJyPuKAoiBGw7xyIFZlcmvDpHVmZXI6IEhvaGVzIEdhbW1hID0gaG9oZXMgUmlzaWtvCUdhbW1hIFdhbm4taG9jaApXYXMgaXN0IDxiPlRoZXRhICjOmCk8L2I+IGJlaSBlaW5lciBPcHRpb24/CTxiPlRoZXRhPC9iPiBtaXNzdCBkZW4gPGI+dMOkZ2xpY2hlbiBXZXJ0dmVybHVzdDwvYj4gZWluZXIgT3B0aW9uIGR1cmNoIGRlbiBBYmxhdWYgZGVyIFplaXQg4oCUIGF1Y2gg4oCeWmVpdHdlcnR2ZXJsdXN0IiBvZGVyIOKAnnRpbWUgZGVjYXkiIGdlbmFubnQuPGJyPjxicj7igKIgVGhldGEgaXN0IGbDvHIgPGI+S8OkdWZlcjwvYj4gKExvbmcpIGZhc3QgaW1tZXIgPGI+bmVnYXRpdjwvYj48YnI+4oCiIFRoZXRhIGlzdCBmw7xyIDxiPlZlcmvDpHVmZXI8L2I+IChTaG9ydCkgZmFzdCBpbW1lciA8Yj5wb3NpdGl2PC9iPjxicj48YnI+PGI+QmVpc3BpZWw6PC9iPiBUaGV0YSA9IOKIkjAsMDUg4oaSIERpZSBPcHRpb24gdmVybGllcnQgdMOkZ2xpY2ggfjAsMDUg4oKsIGFuIFdlcnQsIHNlbGJzdCB3ZW5uIHNpY2ggZGVyIEt1cnMgbmljaHQgYmV3ZWd0LglUaGV0YSBHcnVuZGxhZ2VuCldlciBwcm9maXRpZXJ0IHZvbiBUaGV0YSDigJQgPGI+S8OkdWZlcjwvYj4gb2RlciA8Yj5WZXJrw6R1ZmVyPC9iPiBkZXIgT3B0aW9uPwk8Yj5WZXJrw6R1ZmVyIHByb2ZpdGllcmVuIHZvbiBUaGV0YSE8L2I+PGJyPjxicj7igKIgT3B0aW9uc2vDpHVmZXI6IFRoZXRhIG5lZ2F0aXYg4oaSIFplaXQgYXJiZWl0ZXQgPGI+R0VHRU48L2I+IHNpZTxicj7igKIgT3B0aW9uc3ZlcmvDpHVmZXI6IFRoZXRhIHBvc2l0aXYg4oaSIFplaXQgYXJiZWl0ZXQgPGI+RsOcUjwvYj4gc2llPGJyPjxicj48Yj5NZXJrc2F0ejo8L2I+IE9wdGlvbnN2ZXJrw6R1ZmVyIHNpbmQgd2llIFZlcnNpY2hlcnVuZ2VuIOKAlCBzaWUga2Fzc2llcmVuIFByw6RtaWVuIHVuZCBob2ZmZW4sIGRhc3MgbmljaHRzIHBhc3NpZXJ0IChrZWluIGdyb8OfZXIgS3Vyc2Jld2VndW5nKS4JVGhldGEgS8OkdWZlci1WZXJrw6R1ZmVyCldpZSB2ZXJow6RsdCBzaWNoIGRlciBUaGV0YS1aZWl0d2VydHZlcmx1c3QgbmFoZSBkZW0gPGI+VmVyZmFsbHN0YWc8L2I+IGltIFZlcmdsZWljaCB6dSBmcsO8aCBpbiBkZXIgTGF1ZnplaXQ/CURlciBaZWl0d2VydHZlcmx1c3QgPGI+YmVzY2hsZXVuaWd0IHNpY2ggZXhwb25lbnRpZWxsPC9iPiBqZSBuw6RoZXIgZGVyIFZlcmZhbGxzdGFnIHLDvGNrdC48YnI+PGJyPuKAoiBXZWl0IHZvbSBWZXJmYWxsICgxODArIFRhZ2UpOiA8Yj5MYW5nc2FtZXI8L2I+IHTDpGdsaWNoZXIgVmVybHVzdDxicj7igKIgMzAgVGFnZSB2b3IgVmVyZmFsbDogPGI+U2NobmVsbGVyZXI8L2I+IFZlcmx1c3Q8YnI+4oCiIExldHp0ZSBwYWFyIFRhZ2U6IDxiPlNlaHIgc2NobmVsbGVyPC9iPiBWZXJsdXN0PGJyPjxicj48Yj5GYXVzdHJlZ2VsOjwvYj4gSW4gZGVuIGxldHp0ZW4gMzAgVGFnZW4gZsOkbGx0IGRlciBaZWl0d2VydCBlaW5lciBBVE0tT3B0aW9uIGJlc29uZGVycyBzY2huZWxsLiBLw6R1ZmVyIHNvbGx0ZW4gZGFzIGVpbmthbGt1bGllcmVuIQlUaGV0YSBaZWl0a3VydmUKV2FzIGlzdCA8Yj5WZWdhICjOvSk8L2I+IGJlaSBlaW5lciBPcHRpb24/CTxiPlZlZ2E8L2I+IG1pc3N0LCB3aWUgc3Rhcmsgc2ljaCBkZXIgT3B0aW9uc3ByZWlzIMOkbmRlcnQsIHdlbm4gc2ljaCBkaWUgPGI+aW1wbGl6aXRlIFZvbGF0aWxpdMOkdCAoSVYpPC9iPiB1bSA8Yj4xIFByb3plbnRwdW5rdDwvYj4gw6RuZGVydC48YnI+PGJyPuKAoiBWZWdhIGlzdCBmw7xyIEvDpHVmZXIgPGI+cG9zaXRpdjwvYj4g4oaSIG1laHIgVm9sYXRpbGl0w6R0ID0gdGV1cmVyPGJyPuKAoiBWZWdhIGlzdCBmw7xyIFZlcmvDpHVmZXIgPGI+bmVnYXRpdjwvYj4g4oaSIG1laHIgVm9sYXRpbGl0w6R0ID0gc2NobGVjaHRlcjxicj48YnI+PGI+QmVpc3BpZWw6PC9iPiBWZWdhID0gMCwyMCDihpIgU3RlaWd0IElWIHVtIDElLCBzdGVpZ3QgT3B0aW9uc3ByZWlzIHVtIH4wLDIwIOKCrC4JVmVnYSBHcnVuZGxhZ2VuCldhcyBpc3QgPGI+aW1wbGl6aXRlIFZvbGF0aWxpdMOkdCAoSVYpPC9iPiB1bmQgd2FydW0gaXN0IHNpZSBmw7xyIE9wdGlvbmVuIHdpY2h0aWc/CTxiPkltcGxpeml0ZSBWb2xhdGlsaXTDpHQgKElWKTwvYj4gaXN0IGRpZSBNYXJrdGVyd2FydHVuZyDDvGJlciBkaWUgPGI+enVrw7xuZnRpZ2UgU2Nod2Fua3VuZ3NicmVpdGU8L2I+IGRlcyBCYXNpc3dlcnRzIOKAlCBhdXNnZWRyw7xja3QgYWxzIFByb3plbnR6YWhsLjxicj48YnI+4oCiIE1hcmt0IHJ1aGlnIOKGkiBJViBuaWVkcmlnICh6LkIuIDE1JSkg4oaSIDxiPk9wdGlvbmVuIGfDvG5zdGlnPC9iPjxicj7igKIgTWFya3QgbmVydsO2cyDihpIgSVYgaG9jaCAoei5CLiA0MCUpIOKGkiA8Yj5PcHRpb25lbiB0ZXVlcjwvYj48YnI+PGJyPjxiPk1lcmtzYXR6OjwvYj4gV2VyIGJpbGxpZyBrYXVmdCB1bmQgdGV1ZXIgdmVya2F1ZnQsIG11c3MgYXVmIGRpZSBJViBhY2h0ZW4g4oCUIG5pY2h0IG51ciBhdWYgZGllIEt1cnNyaWNodHVuZyEJVmVnYSBJbXBsaXppdGVWb2xhdGlsaXTDpHQKRWluZSBPcHRpb24gaGF0IFZlZ2EgPSAwLDI1LiBEaWUgaW1wbGl6aXRlIFZvbGF0aWxpdMOkdCBzdGVpZ3Qgdm9uIDIwJSBhdWYgMjMlLiBXaWUgw6RuZGVydCBzaWNoIGRlciBPcHRpb25zcHJlaXM/CTxiPkZvcm1lbDo8L2I+IFByZWlzw6RuZGVydW5nIOKJiCBWZWdhIMOXIMOEbmRlcnVuZyBkZXIgSVY8YnI+PGJyPj0gMCwyNSDDlyAzID0gPGI+MCw3NSDigqw8L2I+PGJyPjxicj5EZXIgT3B0aW9uc3ByZWlzIHN0ZWlndCB1bSB+MCw3NSDigqwuPGJyPjxicj48Yj5BY2h0dW5nOjwvYj4gU2lua3QgZGllIElWIHVtIDMlLCBmw6RsbHQgZGVyIE9wdGlvbnNwcmVpcyB1bSB+MCw3NSDigqwg4oCUIGF1Y2ggd2VubiBzaWNoIGRlciBBa3RpZW5rdXJzIGdhciBuaWNodCBiZXdlZ3QgaGF0ISBEaWVzZXMgUGjDpG5vbWVuIGhlacOfdCA8Yj7igJ5WZWdhLUNydXNoIjwvYj4gKHouQi4gbmFjaCBRdWFydGFsc3phaGxlbikuCVZlZ2EgUmVjaG51bmcKQmVpIHdlbGNoZW4gT3B0aW9uZW4gaXN0IFZlZ2EgYmVzb25kZXJzIDxiPmhvY2g8L2I+IOKAlCBiZWkgd2VsY2hlbiBiZXNvbmRlcnMgPGI+bmllZHJpZzwvYj4/CTxiPlZlZ2EgaXN0IEhPQ0ggYmVpOjwvYj48YnI+4oCiIExhbmdlciBSZXN0bGF1ZnplaXQgKExFQVBTLCA24oCTMTIgTW9uYXRlKSDigJQgbWVociBaZWl0ID0gbWVociBFaW5mbHVzcyBkZXIgVm9sYXRpbGl0w6R0PGJyPuKAoiBBVE0tT3B0aW9uZW4gKG1heGltYWxlIFVuc2ljaGVyaGVpdCk8YnI+PGJyPjxiPlZlZ2EgaXN0IE5JRURSSUcgYmVpOjwvYj48YnI+4oCiIFNlaHIga3VyeiBsYXVmZW5kZW4gT3B0aW9uZW4gKHdlbmlnZSBUYWdlKTxicj7igKIgRGVlcCBJVE0gb2RlciBEZWVwIE9UTSBPcHRpb25lbjxicj48YnI+PGI+UHJheGlzdGlwcDo8L2I+IFdlciBPcHRpb25lbiBrdXJ6IHZvciBRdWFydGFsc3phaGxlbiBrYXVmdCwgemFobHQgZWluZW4gaG9oZW4gSVYtQXVmc2NobGFnIOKAlCBuYWNoIGRlbSBFdmVudCBmw6RsbHQgZGllIElWIG9mdCBzY2hsYWdhcnRpZyEJVmVnYSBXYW5uLWhvY2gKRsO8bGxlIGRpZSBUYWJlbGxlIGF1czogV2VsY2hlbiBCZXJlaWNoIGhhdCBqZWRlcyBHcmVlaywgdW5kIHdhcyBpc3QgZGFzIFNjaGzDvHNzZWx3b3J0Pwk8dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNCI+PHRyPjx0aD5HcmVlazwvdGg+PHRoPk1pc3N0PC90aD48dGg+U2NobMO8c3NlbHdvcnQ8L3RoPjwvdHI+PHRyPjx0ZD48Yj7OlCBEZWx0YTwvYj48L3RkPjx0ZD5QcmVpc8OkbmRlcnVuZyBiZWkgS3Vyc2Jld2VndW5nPC90ZD48dGQ+UHJlaXNzZW5zaXRpdml0w6R0PC90ZD48L3RyPjx0cj48dGQ+PGI+zpMgR2FtbWE8L2I+PC90ZD48dGQ+w4RuZGVydW5nIHZvbiBEZWx0YTwvdGQ+PHRkPktyw7xtbXVuZyAvIEJlc2NobGV1bmlndW5nPC90ZD48L3RyPjx0cj48dGQ+PGI+zpggVGhldGE8L2I+PC90ZD48dGQ+VMOkZ2xpY2hlciBaZWl0d2VydHZlcmx1c3Q8L3RkPjx0ZD5aZWl0ID0gRmVpbmQgZGVzIEvDpHVmZXJzPC90ZD48L3RyPjx0cj48dGQ+PGI+zr0gVmVnYTwvYj48L3RkPjx0ZD7DhG5kZXJ1bmcgZHVyY2ggVm9sYXRpbGl0w6R0c8OkbmRlcnVuZzwvdGQ+PHRkPlZvbGF0aWxpdMOkdHNzZW5zaXRpdml0w6R0PC90ZD48L3RyPjwvdGFibGU+CcOcYmVyYmxpY2sgR3JlZWtzCg=="}], "grading": {"expectations": [{"text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A TSV export section with #separator:tab and #html:true headers is present", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Cards are written in German (German terms and explanations)", "passed": true, "evidence": "Auto-graded: PASS"}]}}, {"id": "eval-2-covered-call-with_skill", "prompt": "Mach mir Anki-Karten f\u00fcr die Covered Call Strategie. Ich will verstehen wann ich sie einsetze, wie das Payoff aussieht, und was der maximale Gewinn/Verlust ist. Am liebsten mit einem Payoff-Diagramm.", "eval_id": 2, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki-Karten: Covered Call Strategie\n\n**Deck:** `Optionen::Strategien::Covered Call`  \n**Karten gesamt:** 8 (7 Basic, 1 Cloze \u2014 davon 1 mit Payoff-Diagramm)\n\n---\n\n## Karte 1 \u2014 Basic: Komponenten\n\n**Vorderseite:**\n> Was sind die zwei Komponenten eines Covered Calls?\n\n**R\u00fcckseite:**\n\n1. **Long Stock** \u2014 Du besitzt bereits 100 Aktien des Underlyings.\n2. **Short Call** \u2014 Du verkaufst eine Call-Option auf dieselbe Aktie (gleicher Basiswert, gleicher Verfall).\n\nDie Option ist \"covered\" (gedeckt), weil du die Aktien bereits h\u00e4ltst \u2014 im Aus\u00fcbungsfall kannst du sie direkt liefern, ohne sie neu kaufen zu m\u00fcssen.\n\n---\n\n## Karte 2 \u2014 Basic: Wann einsetzen?\n\n**Vorderseite:**\n> Welche Markterwartung rechtfertigt den Einsatz eines Covered Calls?\n\n**R\u00fcckseite:**\n\n**Neutral bis leicht bullisch.**\n\nGeeignet wenn:\n- Du die Aktie bereits besitzt und sie **halten** willst\n- Du einen stabilen oder **moderat steigenden** Kurs erwartest\n- Du **kein** starkes Kursanstiegspotenzial siehst (oder bewusst darauf verzichtest)\n- Du laufende Einnahmen aus der Pr\u00e4mie generieren willst\n\n**Nicht geeignet wenn:** Du einen starken Kursanstieg erwartest \u2014 deine Gewinne sind durch den Strike gedeckelt.\n\n---\n\n## Karte 3 \u2014 Diagramm: Payoff-Profil\n\n**Vorderseite:**\n> Wie sieht das Payoff-Profil eines Covered Calls bei Verfall aus?  \n> (Aktie gekauft bei $50 | Short Call Strike $55 | Pr\u00e4mie erhalten: $2)\n\n**R\u00fcckseite:**\n\n```mermaid\nxychart-beta\n    title \"Covered Call Payoff bei Verfall\"\n    x-axis [40, 42, 44, 46, 48, 50, 52, 54, 55, 57, 60]\n    y-axis \"Gewinn/Verlust ($/Aktie)\" -10 10\n    line [-8, -6, -4, -2, 0, 2, 4, 6, 7, 7, 7]\n```\n\n| Kennzahl | Wert | Formel |\n|---|---|---|\n| **Breakeven** | $48 | Kaufpreis \u2212 Pr\u00e4mie |\n| **Max. Gewinn** | $7 | (Strike \u2212 Kaufpreis) + Pr\u00e4mie |\n| **Max. Verlust** | $48/Aktie | Kaufpreis \u2212 Pr\u00e4mie (bei S \u2192 0) |\n\n**Interpretation:** Die Kurve steigt linear bis zum Strike ($55), danach ist der Gewinn gedeckelt. Links vom Breakeven ($48) macht die Position Verlust.\n\n> **Anki-Hinweis:** Mermaid-Rendering erfordert einmalige Einrichtung im Kartentemplate:  \n> `Extras \u2192 Kartentypen \u2192 Vorlage bearbeiten` \u2192 Script-Tag einf\u00fcgen (siehe Import-Hinweise unten).\n\n---\n\n## Karte 4 \u2014 Basic: Maximaler Gewinn\n\n**Vorderseite:**\n> Covered Call: Aktie bei $50 gekauft, Call Strike $55 verkauft, Pr\u00e4mie $2 erhalten.  \n> Was ist der **maximale Gewinn** pro Aktie, und wann tritt er ein?\n\n**R\u00fcckseite:**\n\n**$7 pro Aktie**, wenn der Aktienkurs bei Verfall **\u2265 Strike ($55)** liegt.\n\n**Formel: Max. Gewinn = (Strike \u2212 Kaufpreis) + Pr\u00e4mie**  \n= (55 \u2212 50) + 2 = **$7**\n\n- Kursgewinn bis zum Strike: $5\n- Pr\u00e4mieneinnahme: $2\n- Gewinne \u00fcber $55 hinaus gehen an den Call-K\u00e4ufer (du hast sie \"verkauft\")\n\n---\n\n## Karte 5 \u2014 Basic: Maximaler Verlust\n\n**Vorderseite:**\n> Covered Call: Aktie bei $50 gekauft, Pr\u00e4mie $2 erhalten.  \n> Was ist der **maximale Verlust** pro Aktie?\n\n**R\u00fcckseite:**\n\n**$48 pro Aktie** \u2014 im theoretischen Fall, dass die Aktie auf $0 f\u00e4llt.\n\n**Formel: Max. Verlust = Kaufpreis \u2212 Pr\u00e4mie**  \n= 50 \u2212 2 = **$48**\n\nDie Pr\u00e4mie ($2) puffert den Verlust leicht ab, eliminiert das Downside-Risiko aber **nicht**. Der Covered Call bietet keinen substanziellen Schutz gegen starke Kursr\u00fcckg\u00e4nge \u2014 daf\u00fcr br\u00e4uchtest du einen Protective Put.\n\n---\n\n## Karte 6 \u2014 Cloze: Breakeven-Formel\n\n**Text:**\n\nBeim Covered Call liegt der Breakeven-Punkt bei {{c1::Kaufpreis \u2212 Pr\u00e4mie}}.\n\nBeispiel: Aktie gekauft bei **$50**, Call-Pr\u00e4mie erhalten **$2** \u2192 Breakeven = {{c2::$48}}.\n\nInterpretation: Unterhalb von $48 macht die Gesamtposition Verlust \u2014 trotz der erhaltenen Pr\u00e4mie.\n\n---\n\n## Karte 7 \u2014 Basic: Opportunity Cost (starker Kursanstieg)\n\n**Vorderseite:**\n> Du hast einen Covered Call: Aktie Einstieg $50, Call Strike $55, Pr\u00e4mie $2 erhalten.  \n> Die Aktie steigt auf $70. Was passiert, und was kostet dich das?\n\n**R\u00fcckseite:**\n\nDie Call-Option wird ausge\u00fcbt. Du **musst** deine Aktien zum Strike $55 liefern.\n\n- **Dein Gewinn:** $7 (= $5 Kursgewinn + $2 Pr\u00e4mie)\n- **Entgangener Gewinn:** $15 (= $70 \u2212 $55 \u2014 dieser Betrag geht an den Call-K\u00e4ufer)\n\n**Opportunity Cost** ist das Hauptrisiko des Covered Calls: Du verkaufst das Upside-Potenzial gegen eine begrenzte Pr\u00e4mie. Das ist der bewusste \"Preis\" der Strategie \u2014 akzeptabel, wenn du ohnehin keinen starken Anstieg erwartet hast.\n\n---\n\n## Karte 8 \u2014 Basic: Alle Kennzahlen auf einen Blick\n\n**Vorderseite:**\n> Nenne die drei wichtigsten Kennzahlen des Covered Calls als Formeln.  \n> (Kaufpreis = K, Strike = S, Pr\u00e4mie = P)\n\n**R\u00fcckseite:**\n\n| Kennzahl | Formel | Beispiel (K=$50, S=$55, P=$2) |\n|---|---|---|\n| **Max. Gewinn** | (S \u2212 K) + P | **$7** |\n| **Max. Verlust** | K \u2212 P | **$48** |\n| **Breakeven** | K \u2212 P | **$48** |\n\nBeachte: Max. Verlust und Breakeven haben dieselbe Formel \u2014 beide = Kaufpreis minus Pr\u00e4mie.  \nDer Gewinn ist nach oben durch den Strike **gedeckelt**, der Verlust nach unten durch den Aktienkurs (max. auf $0) **unbegrenzt** (bis K\u2212P).\n\n---\n\n## Import-Hinweise f\u00fcr Anki\n\n### Kartentypen\n\n- **Karten 1\u20135, 7\u20138:** Basic-Karten \u2192 mit dem `#notetype:Basic`-Block aus `cards.tsv` importieren\n- **Karte 6:** Cloze-Karte \u2192 mit dem `#notetype:Cloze`-Block importieren (separater Import-Vorgang)\n\n### Mermaid-Diagramm einrichten (einmalig)\n\nF\u00fcr Karte 3 (Payoff-Diagramm) muss **einmalig** folgendes in die Kartenvorlage eingef\u00fcgt werden:\n\n1. Anki \u00f6ffnen \u2192 **Extras \u2192 Kartentypen verwalten**\n2. Den \"Basic\"-Typ ausw\u00e4hlen \u2192 **Vorlage bearbeiten**\n3. Am Ende des **R\u00fcckseiten-Templates** einf\u00fcgen:\n\n```html\n<script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>\n<script>mermaid.initialize({startOnLoad:true});</script>\n```\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,I3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6QmFzaWMKI2RlY2s6T3B0aW9uZW46OlN0cmF0ZWdpZW46OkNvdmVyZWQgQ2FsbApXYXMgc2luZCBkaWUgendlaSBLb21wb25lbnRlbiBlaW5lcyBDb3ZlcmVkIENhbGxzPwkxLiA8Yj5Mb25nIFN0b2NrPC9iPiDigJQgRHUgYmVzaXR6dCBiZXJlaXRzIDEwMCBBa3RpZW4gZGVzIFVuZGVybHlpbmdzLjxicj4yLiA8Yj5TaG9ydCBDYWxsPC9iPiDigJQgRHUgdmVya2F1ZnN0IGVpbmUgQ2FsbC1PcHRpb24gYXVmIGRpZXNlbGJlIEFrdGllLjxicj48YnI+RGllIE9wdGlvbiBpc3QgJmxkcXVvO2NvdmVyZWQmcmRxdW87IChnZWRlY2t0KSwgd2VpbCBkdSBkaWUgQWt0aWVuIGJlcmVpdHMgaMOkbHRzdCB1bmQgc2llIGltIEF1c8O8YnVuZ3NmYWxsIGRpcmVrdCBsaWVmZXJuIGthbm5zdC4KV2VsY2hlIE1hcmt0ZXJ3YXJ0dW5nIHJlY2h0ZmVydGlndCBkZW4gRWluc2F0eiBlaW5lcyBDb3ZlcmVkIENhbGxzPwk8Yj5OZXV0cmFsIGJpcyBsZWljaHQgYnVsbGlzY2guPC9iPjxicj48YnI+R2VlaWduZXQgd2Vubjo8YnI+PHVsPjxsaT5EdSBkaWUgQWt0aWUgYmVyZWl0cyBiZXNpdHp0IHVuZCBoYWx0ZW4gd2lsbHN0PC9saT48bGk+RHUgZWluZW4gc3RhYmlsZW4gb2RlciBtb2RlcmF0IHN0ZWlnZW5kZW4gS3VycyBlcndhcnRlc3Q8L2xpPjxsaT5EdSA8Yj5rZWluPC9iPiBzdGFya2VzIEt1cnNhbnN0aWVnc3BvdGVuemlhbCBzaWVoc3Q8L2xpPjxsaT5EdSBsYXVmZW5kZSBQcsOkbWllbmVpbm5haG1lbiBnZW5lcmllcmVuIHdpbGxzdDwvbGk+PC91bD48Yj5OaWNodCBnZWVpZ25ldCB3ZW5uOjwvYj4gRHUgZWluZW4gc3RhcmtlbiBLdXJzYW5zdGllZyBlcndhcnRlc3Qg4oCUIEdld2lubmUgc2luZCBkdXJjaCBkZW4gU3RyaWtlIGdlZGVja2VsdC4KV2llIHNpZWh0IGRhcyBQYXlvZmYtUHJvZmlsIGVpbmVzIENvdmVyZWQgQ2FsbHMgYmVpIFZlcmZhbGwgYXVzPzxicj4oQWt0aWUgZ2VrYXVmdCBiZWkgJDUwIHwgU2hvcnQgQ2FsbCBTdHJpa2UgJDU1IHwgUHLDpG1pZSBlcmhhbHRlbjogJDIpCSI8ZGl2IGNsYXNzPSIibWVybWFpZCIiPgp4eWNoYXJ0LWJldGEKICAgIHRpdGxlICIiQ292ZXJlZCBDYWxsIFBheW9mZiBiZWkgVmVyZmFsbCIiCiAgICB4LWF4aXMgWzQwLCA0MiwgNDQsIDQ2LCA0OCwgNTAsIDUyLCA1NCwgNTUsIDU3LCA2MF0KICAgIHktYXhpcyAiIkdld2lubi9WZXJsdXN0ICgkL0FrdGllKSIiIC0xMCAxMAogICAgbGluZSBbLTgsIC02LCAtNCwgLTIsIDAsIDIsIDQsIDYsIDcsIDcsIDddCjwvZGl2Pjxicj48YnI+PHRhYmxlPjx0cj48dGg+S2VubnphaGw8L3RoPjx0aD5XZXJ0PC90aD48dGg+Rm9ybWVsPC90aD48L3RyPjx0cj48dGQ+PGI+QnJlYWtldmVuPC9iPjwvdGQ+PHRkPiQ0ODwvdGQ+PHRkPkthdWZwcmVpcyAmbWludXM7IFByw6RtaWU8L3RkPjwvdHI+PHRyPjx0ZD48Yj5NYXguIEdld2lubjwvYj48L3RkPjx0ZD4kNzwvdGQ+PHRkPihTdHJpa2UgJm1pbnVzOyBLYXVmcHJlaXMpICsgUHLDpG1pZTwvdGQ+PC90cj48dHI+PHRkPjxiPk1heC4gVmVybHVzdDwvYj48L3RkPjx0ZD4kNDgvQWt0aWU8L3RkPjx0ZD5LYXVmcHJlaXMgJm1pbnVzOyBQcsOkbWllIChiZWkgUyZyYXJyOzApPC90ZD48L3RyPjwvdGFibGU+PGJyPjxzbWFsbD48aT5NZXJtYWlkLVJlbmRlcmluZyBlcmZvcmRlcnQgbWVybWFpZC5qcyBpbSBLYXJ0ZW50ZW1wbGF0ZSAoZWlubWFsaWcpLjwvaT48L3NtYWxsPiIKQ292ZXJlZCBDYWxsOiBBa3RpZSBiZWkgJDUwIGdla2F1ZnQsIENhbGwgU3RyaWtlICQ1NSB2ZXJrYXVmdCwgUHLDpG1pZSAkMiBlcmhhbHRlbi48YnI+V2FzIGlzdCBkZXIgPGI+bWF4aW1hbGUgR2V3aW5uPC9iPiBwcm8gQWt0aWUsIHVuZCB3YW5uIHRyaXR0IGVyIGVpbj8JPGI+JDcgcHJvIEFrdGllPC9iPiwgd2VubiBkZXIgQWt0aWVua3VycyBiZWkgVmVyZmFsbCA8Yj4mZ2U7IFN0cmlrZSAoJDU1KTwvYj4gbGllZ3QuPGJyPjxicj5Gb3JtZWw6IDxiPk1heC4gR2V3aW5uID0gKFN0cmlrZSAmbWludXM7IEthdWZwcmVpcykgKyBQcsOkbWllPC9iPjxicj49ICg1NSAmbWludXM7IDUwKSArIDIgPSA8Yj4kNzwvYj48YnI+PGJyPjx1bD48bGk+S3Vyc2dld2lubiBiaXMgenVtIFN0cmlrZTogJDU8L2xpPjxsaT5QcsOkbWllbmVpbm5haG1lOiAkMjwvbGk+PGxpPkdld2lubmUgJnV1bWw7YmVyICQ1NSBoaW5hdXMgZ2VoZW4gYW4gZGVuIENhbGwtS8OkdWZlcjwvbGk+PC91bD4KQ292ZXJlZCBDYWxsOiBBa3RpZSBiZWkgJDUwIGdla2F1ZnQsIFByw6RtaWUgJDIgZXJoYWx0ZW4uPGJyPldhcyBpc3QgZGVyIDxiPm1heGltYWxlIFZlcmx1c3Q8L2I+IHBybyBBa3RpZT8JPGI+JDQ4IHBybyBBa3RpZTwvYj4gJm1kYXNoOyBpbSB0aGVvcmV0aXNjaGVuIEZhbGwsIGRhc3MgZGllIEFrdGllIGF1ZiAkMCBmw6RsbHQuPGJyPjxicj5Gb3JtZWw6IDxiPk1heC4gVmVybHVzdCA9IEthdWZwcmVpcyAmbWludXM7IFByw6RtaWU8L2I+PGJyPj0gNTAgJm1pbnVzOyAyID0gPGI+JDQ4PC9iPjxicj48YnI+RGllIFByw6RtaWUgcHVmZmVydCBkZW4gVmVybHVzdCBsZWljaHQgYWIsIGVsaW1pbmllcnQgZGFzIERvd25zaWRlLVJpc2lrbyBhYmVyIDxiPm5pY2h0PC9iPi4gRsO8ciBlY2h0ZW4gU2NodXR6IG5hY2ggdW50ZW4gYnLDpHVjaHRlc3QgZHUgZWluZW4gUHJvdGVjdGl2ZSBQdXQuCkR1IGhhc3QgZWluZW4gQ292ZXJlZCBDYWxsOiBBa3RpZSBFaW5zdGllZyAkNTAsIENhbGwgU3RyaWtlICQ1NSwgUHLDpG1pZSAkMiBlcmhhbHRlbi48YnI+RGllIEFrdGllIHN0ZWlndCBhdWYgJDcwLiBXYXMgcGFzc2llcnQsIHVuZCB3YXMga29zdGV0IGRpY2ggZGFzPwlEaWUgQ2FsbC1PcHRpb24gd2lyZCBhdXNnZcO8YnQuIER1IDxiPm11c3N0PC9iPiBkZWluZSBBa3RpZW4genVtIFN0cmlrZSAkNTUgbGllZmVybi48YnI+PGJyPjx1bD48bGk+PGI+RGVpbiBHZXdpbm46PC9iPiAkNyAoPSAkNSBLdXJzZ2V3aW5uICsgJDIgUHLDpG1pZSk8L2xpPjxsaT48Yj5FbnRnYW5nZW5lciBHZXdpbm46PC9iPiAkMTUgKD0gJDcwICZtaW51czsgJDU1ICZtZGFzaDsgZ2VodCBhbiBkZW4gQ2FsbC1Lw6R1ZmVyKTwvbGk+PC91bD48Yj5PcHBvcnR1bml0eSBDb3N0PC9iPiBpc3QgZGFzIEhhdXB0cmlzaWtvIGRlcyBDb3ZlcmVkIENhbGxzOiBEdSB2ZXJrYXVmc3QgZGFzIFVwc2lkZS1Qb3RlbnppYWwgZ2VnZW4gZWluZSBiZWdyZW56dGUgUHLDpG1pZS4KTmVubmUgZGllIGRyZWkgd2ljaHRpZ3N0ZW4gS2VubnphaGxlbiBkZXMgQ292ZXJlZCBDYWxscyBhbHMgRm9ybWVsbi48YnI+KEthdWZwcmVpcyA9IEssIFN0cmlrZSA9IFMsIFByw6RtaWUgPSBQKQk8dGFibGU+PHRyPjx0aD5LZW5uemFobDwvdGg+PHRoPkZvcm1lbDwvdGg+PHRoPkJlaXNwaWVsIChLPSQ1MCwgUz0kNTUsIFA9JDIpPC90aD48L3RyPjx0cj48dGQ+PGI+TWF4LiBHZXdpbm48L2I+PC90ZD48dGQ+KFMgJm1pbnVzOyBLKSArIFA8L3RkPjx0ZD48Yj4kNzwvYj48L3RkPjwvdHI+PHRyPjx0ZD48Yj5NYXguIFZlcmx1c3Q8L2I+PC90ZD48dGQ+SyAmbWludXM7IFA8L3RkPjx0ZD48Yj4kNDg8L2I+PC90ZD48L3RyPjx0cj48dGQ+PGI+QnJlYWtldmVuPC9iPjwvdGQ+PHRkPksgJm1pbnVzOyBQPC90ZD48dGQ+PGI+JDQ4PC9iPjwvdGQ+PC90cj48L3RhYmxlPjxicj5NYXguIFZlcmx1c3QgdW5kIEJyZWFrZXZlbiBoYWJlbiBkaWVzZWxiZSBGb3JtZWwgJm1kYXNoOyBkZXIgR2V3aW5uIGlzdCBuYWNoIG9iZW4gZHVyY2ggZGVuIFN0cmlrZSA8Yj5nZWRlY2tlbHQ8L2I+LgoKCiMg4pSA4pSAIENsb3plLUthcnRlbiAoYWxzIHNlcGFyYXRlIEltcG9ydGRhdGVpIGltcG9ydGllcmVuKSDilIDilIAKI3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6Q2xvemUKI2RlY2s6T3B0aW9uZW46OlN0cmF0ZWdpZW46OkNvdmVyZWQgQ2FsbApCZWltIENvdmVyZWQgQ2FsbCBsaWVndCBkZXIgQnJlYWtldmVuLVB1bmt0IGJlaSB7e2MxOjpLYXVmcHJlaXMgJm1pbnVzOyBQcsOkbWllfX0uPGJyPjxicj5CZWlzcGllbDogQWt0aWUgZ2VrYXVmdCBiZWkgPGI+JDUwPC9iPiwgQ2FsbC1QcsOkbWllIGVyaGFsdGVuIDxiPiQyPC9iPiAmcmFycjsgQnJlYWtldmVuID0ge3tjMjo6JDQ4fX0uCVVudGVyaGFsYiB2b24gJDQ4IG1hY2h0IGRpZSBHZXNhbXRwb3NpdGlvbiBWZXJsdXN0ICZtZGFzaDsgdHJvdHogZGVyIGVyaGFsdGVuZW4gUHLDpG1pZS4K"}], "grading": {"expectations": [{"text": "A Mermaid diagram showing the payoff profile is included", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum gain formula and value are stated", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum loss and breakeven point are mentioned", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A concrete example with specific numbers is given", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "TSV export is included with #separator:tab header", "passed": true, "evidence": "Auto-graded: PASS"}]}}, {"id": "eval-2-covered-call-without_skill", "prompt": "Mach mir Anki-Karten f\u00fcr die Covered Call Strategie. Ich will verstehen wann ich sie einsetze, wie das Payoff aussieht, und was der maximale Gewinn/Verlust ist. Am liebsten mit einem Payoff-Diagramm.", "eval_id": 2, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki-Karten: Covered Call Strategie\n\n---\n\n## Karte 1 \u2014 Definition\n\n**Q: Was ist ein Covered Call?**\n\nEin Covered Call kombiniert zwei Positionen:\n\n1. **Long Stock** \u2014 du besitzt 100 Aktien (zu Preis S\u2080)\n2. **Short Call** \u2014 du verkaufst eine Call-Option auf dieselbe Aktie (Strike K, Pr\u00e4mie C)\n\n\"Covered\" = Der Call ist durch den tats\u00e4chlichen Aktienbesitz gedeckt \u2014 kein Naked-Risiko.\n\n---\n\n## Karte 2 \u2014 Wann einsetzen?\n\n**Q: Wann setzt du einen Covered Call ein?**\n\nNutze einen Covered Call wenn:\n\n- Du **neutral bis leicht bullisch** auf eine Aktie bist\n- Du **Einkommen** (Pr\u00e4mie) aus deiner bestehenden Position generieren willst\n- Du bereit bist, das **Aufw\u00e4rtspotenzial bei Strike K zu deckeln**\n- Die **implizite Volatilit\u00e4t (IV) relativ hoch** ist (mehr Pr\u00e4mie)\n- Du nicht von einer starken Aufw\u00e4rtsbewegung erwartest\n\n**Nicht geeignet wenn:** Du stark bullisch bist oder eine gro\u00dfe Aufw\u00e4rtsbewegung erwartest.\n\n---\n\n## Karte 3 \u2014 Setup\n\n**Q: Wie setzt du einen Covered Call auf?**\n\n| Komponente | Aktion | Cashflow |\n|---|---|---|\n| Aktie | Kaufen / bereits halten (100 St\u00fcck) | \u2212S\u2080 |\n| Call Option | Verkaufen (Strike K, Laufzeit T) | +C |\n| **Netto-Kostenbasis** | | **S\u2080 \u2212 C** |\n\nBeispiel: Aktie bei 100 \u20ac, Verkauf Call mit Strike 110 \u20ac, Pr\u00e4mie 5 \u20ac  \n\u2192 Effektiver Einstandspreis: 100 \u2212 5 = **95 \u20ac**\n\n---\n\n## Karte 4 \u2014 Maximaler Gewinn\n\n**Q: Was ist der maximale Gewinn eines Covered Calls?**\n\n$$\\text{Max Gewinn} = (K - S_0) + C$$\n\n**Wann?** Wenn der Aktienkurs bei Verfall $S_T \\geq K$ ist \u2014 die Aktie wird zum Strike-Preis K \u201eweggerufen\" (Call wird ausge\u00fcbt).\n\n**Beispiel:** S\u2080 = 100, K = 110, C = 5  \n\u2192 Max Gewinn = (110 \u2212 100) + 5 = **15 \u20ac** pro Aktie\n\nDer Gewinn ist **gedeckelt** \u2014 egal wie hoch die Aktie steigt.\n\n---\n\n## Karte 5 \u2014 Maximaler Verlust\n\n**Q: Was ist der maximale Verlust eines Covered Calls?**\n\n$$\\text{Max Verlust} = S_0 - C$$\n\n**Wann?** Wenn die Aktie auf **null** f\u00e4llt. Die erhaltene Pr\u00e4mie reduziert den Verlust.\n\n**Beispiel:** S\u2080 = 100, C = 5  \n\u2192 Max Verlust = 100 \u2212 5 = **95 \u20ac** pro Aktie\n\n> Hinweis: Dies ist besser als reiner Aktienbesitz (Verlust = 100 \u20ac), aber die Pr\u00e4mie sch\u00fctzt nur begrenzt.\n\n---\n\n## Karte 6 \u2014 Breakeven\n\n**Q: Was ist der Breakeven-Punkt eines Covered Calls?**\n\n$$\\text{Breakeven} = S_0 - C$$\n\n**Beispiel:** S\u2080 = 100, C = 5 \u2192 Breakeven = **95 \u20ac**\n\nDie Pr\u00e4mie senkt die effektive Kostenbasis. Liegt der Kurs bei Verfall \u00fcber 95 \u20ac, machst du Gewinn.\n\n---\n\n## Karte 7 \u2014 Payoff-Diagramm\n\n**Q: Wie sieht das Payoff-Diagramm eines Covered Calls aus?**\n\n*(Beispiel: S\u2080 = 100, K = 110, C = 5)*\n\n```mermaid\nxychart-beta\n    title \"Covered Call \u2014 Payoff bei Verfall\"\n    x-axis \"Aktienkurs bei Verfall\" [70, 80, 90, 95, 100, 105, 110, 115, 120, 130]\n    y-axis \"Gewinn / Verlust (\u20ac)\" -35 --> 20\n    line [-25, -15, -5, 0, 5, 10, 15, 15, 15, 15]\n```\n\n**ASCII-Version:**\n\n```\n  P&L\n   15 |                        ___________\n      |                       /\n   10 |                      /\n      |                     /\n    5 |....................../   \u2190 Pr\u00e4mie\n      |                   /\n    0 +--+---+---+-------+----+--------> Aktienkurs\n      |  70  80  90     95  100  110  120\n   -5 |                 ^    ^    ^\n      |                 BE  S\u2080    K\n  -25 |    \u2190 Kursverlust, gemildert durch Pr\u00e4mie\n      |\n```\n\n| Zone | Kurs bei Verfall | P&L |\n|---|---|---|\n| Verlustzone | S_T < 95 | (S_T \u2212 100) + 5 < 0 |\n| Breakeven | S_T = 95 | 0 |\n| Gewinnzone | 95 < S_T < 110 | (S_T \u2212 100) + 5 |\n| Max Gewinn | S_T \u2265 110 | **15 \u20ac (gedeckelt)** |\n\n---\n\n## Karte 8 \u2014 Greeks\n\n**Q: Welche Greeks sind beim Covered Call relevant?**\n\n| Greek | Wert | Bedeutung |\n|---|---|---|\n| **Delta** | 0 bis +1 | Kleiner als bei reinem Aktienbesitz (1 \u2212 \u0394_Call) |\n| **Theta** | **Positiv** | Zeitwertverlust des verkauften Calls kommt dir zugute |\n| **Vega** | **Negativ** | Fallende IV erh\u00f6ht den Gewinn (Short Vega) |\n| **Gamma** | Negativ | Negative Gamma durch Short Call |\n\n> Theta ist dein Freund: Mit jeder verstrichenen Nacht verliert der Call an Wert \u2014 das ist dein Gewinn.\n\n---\n\n## Karte 9 \u2014 Vergleich: Covered Call vs. reiner Aktienbesitz\n\n**Q: Was sind die Unterschiede zwischen Covered Call und reinem Aktienbesitz?**\n\n| Merkmal | Reiner Aktienbesitz | Covered Call |\n|---|---|---|\n| Max Gewinn | Unbegrenzt | Gedeckelt bei (K \u2212 S\u2080) + C |\n| Max Verlust | S\u2080 (Totalverlust) | S\u2080 \u2212 C (Pr\u00e4mie reduziert) |\n| Breakeven | S\u2080 | S\u2080 \u2212 C |\n| Einkommen | Keins | Pr\u00e4mie C |\n| Beste Marktlage | Stark steigend | Seitw\u00e4rts / leicht steigend |\n\n---\n\n## Karte 10 \u2014 Rolling (Verl\u00e4ngerung)\n\n**Q: Was bedeutet \"Rolling\" beim Covered Call?**\n\n**Rolling** = Den bestehenden Call zur\u00fcckkaufen und einen neuen verkaufen.\n\n| Variante | Bedeutung | Wann? |\n|---|---|---|\n| **Roll out** | Gleicher Strike, sp\u00e4teres Verfallsdatum | Mehr Zeit kaufen, Assignment vermeiden |\n| **Roll up** | H\u00f6herer Strike, gleiches oder sp\u00e4teres Datum | Aktie ist gestiegen, mehr Upside sichern |\n| **Roll down** | Niedrigerer Strike | Mehr Pr\u00e4mie einsammeln (erh\u00f6ht Verlustrisiko) |\n\n> Ziel: Assignment (Zwangsverkauf der Aktie) verz\u00f6gern oder Pr\u00e4mieneinnahmen optimieren.\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,I3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6QmFzaWMKI2RlY2s6T3B0aW9ucyBUcmFkaW5nOjpDb3ZlcmVkIENhbGwKV2FzIGlzdCBlaW4gPGI+Q292ZXJlZCBDYWxsPC9iPj8JRWluIENvdmVyZWQgQ2FsbCBrb21iaW5pZXJ0IHp3ZWkgUG9zaXRpb25lbjo8YnI+PGJyPjxiPjEuIExvbmcgU3RvY2s8L2I+IOKAlCBkdSBiZXNpdHp0IDEwMCBBa3RpZW4gKEthdWZwcmVpcyBT4oKAKTxicj48Yj4yLiBTaG9ydCBDYWxsPC9iPiDigJQgZHUgdmVya2F1ZnN0IGVpbmUgQ2FsbC1PcHRpb24gYXVmIGRpZXNlbGJlIEFrdGllIChTdHJpa2UgSywgUHLDpG1pZSBDKTxicj48YnI+PGk+4oCeQ292ZXJlZCI8L2k+ID0gRGVyIENhbGwgaXN0IGR1cmNoIGRlbiB0YXRzw6RjaGxpY2hlbiBBa3RpZW5iZXNpdHogZ2VkZWNrdCDigJQga2VpbiBOYWtlZC1SaXNpa28uCldhbm4gc2V0enQgZHUgZWluZW4gPGI+Q292ZXJlZCBDYWxsPC9iPiBlaW4/CU51dHplIGVpbmVuIENvdmVyZWQgQ2FsbCB3ZW5uOjxicj48dWw+PGxpPkR1IDxiPm5ldXRyYWwgYmlzIGxlaWNodCBidWxsaXNjaDwvYj4gYXVmIGRpZSBBa3RpZSBiaXN0PC9saT48bGk+RHUgPGI+RWlua29tbWVuIChQcsOkbWllKTwvYj4gYXVzIGVpbmVyIGJlc3RlaGVuZGVuIFBvc2l0aW9uIGdlbmVyaWVyZW4gd2lsbHN0PC9saT48bGk+RHUgYmVyZWl0IGJpc3QsIGRhcyA8Yj5BdWZ3w6RydHNwb3RlbnppYWwgYmVpIFN0cmlrZSBLIHp1IGRlY2tlbG48L2I+PC9saT48bGk+RGllIDxiPmltcGxpeml0ZSBWb2xhdGlsaXTDpHQgKElWKSByZWxhdGl2IGhvY2g8L2I+IGlzdCAobWVociBQcsOkbWllKTwvbGk+PC91bD48YnI+PGI+TmljaHQgZ2VlaWduZXQ8L2I+LCB3ZW5uIGR1IHN0YXJrIGJ1bGxpc2NoIGJpc3Qgb2RlciBlaW5lIGdyb8OfZSBBdWZ3w6RydHNiZXdlZ3VuZyBlcndhcnRlc3QuCldpZSBzZXR6dCBkdSBlaW5lbiA8Yj5Db3ZlcmVkIENhbGw8L2I+IGF1Zj8JPHRhYmxlIGJvcmRlcj0iMSIgY2VsbHBhZGRpbmc9IjQiPjx0cj48dGg+S29tcG9uZW50ZTwvdGg+PHRoPkFrdGlvbjwvdGg+PHRoPkNhc2hmbG93PC90aD48L3RyPjx0cj48dGQ+QWt0aWU8L3RkPjx0ZD5LYXVmZW4gLyBiZXJlaXRzIGhhbHRlbiAoMTAwIFN0w7xjayk8L3RkPjx0ZD7iiJJT4oKAPC90ZD48L3RyPjx0cj48dGQ+Q2FsbCBPcHRpb248L3RkPjx0ZD5WZXJrYXVmZW4gKFN0cmlrZSBLKTwvdGQ+PHRkPitDPC90ZD48L3RyPjx0cj48dGQ+PGI+TmV0dG8tS29zdGVuYmFzaXM8L2I+PC90ZD48dGQ+PC90ZD48dGQ+PGI+U+KCgCDiiJIgQzwvYj48L3RkPjwvdHI+PC90YWJsZT48YnI+PGI+QmVpc3BpZWw6PC9iPiBBa3RpZSBiZWkgMTAwIOKCrCwgQ2FsbCBtaXQgU3RyaWtlIDExMCDigqwsIFByw6RtaWUgNSDigqwg4oaSIEVmZmVrdGl2ZXIgRWluc3RhbmRzcHJlaXM6IDxiPjk1IOKCrDwvYj4KV2FzIGlzdCBkZXIgPGI+bWF4aW1hbGUgR2V3aW5uPC9iPiBlaW5lcyBDb3ZlcmVkIENhbGxzPwk8Yj5NYXggR2V3aW5uID0gKEsg4oiSIFPigoApICsgQzwvYj48YnI+PGJyPkVycmVpY2h0IHdlbm4gU19UIOKJpSBLIGJlaSBWZXJmYWxsIOKAlCBkaWUgQWt0aWUgd2lyZCB6dW0gU3RyaWtlLVByZWlzIOKAnndlZ2dlcnVmZW4iLjxicj48YnI+PGI+QmVpc3BpZWw6PC9iPiBT4oKAPTEwMCwgSz0xMTAsIEM9NTxicj5NYXggR2V3aW5uID0gKDExMOKIkjEwMCkrNSA9IDxiPjE1IOKCrDwvYj4gcHJvIEFrdGllPGJyPjxicj7imqDvuI8gRGVyIEdld2lubiBpc3QgZ2VkZWNrZWx0IOKAlCBlZ2FsIHdpZSBob2NoIGRpZSBBa3RpZSBzdGVpZ3QuCldhcyBpc3QgZGVyIDxiPm1heGltYWxlIFZlcmx1c3Q8L2I+IGVpbmVzIENvdmVyZWQgQ2FsbHM/CTxiPk1heCBWZXJsdXN0ID0gU+KCgCDiiJIgQzwvYj48YnI+PGJyPlRyaXR0IGVpbiwgd2VubiBkaWUgQWt0aWUgYXVmIDxiPm51bGw8L2I+IGbDpGxsdC4gRGllIGVyaGFsdGVuZSBQcsOkbWllIHJlZHV6aWVydCBkZW4gVmVybHVzdC48YnI+PGJyPjxiPkJlaXNwaWVsOjwvYj4gU+KCgD0xMDAsIEM9NTxicj5NYXggVmVybHVzdCA9IDEwMOKIkjUgPSA8Yj45NSDigqw8L2I+IHBybyBBa3RpZTxicj48YnI+PGk+QmVzc2VyIGFscyByZWluZXIgQWt0aWVuYmVzaXR6ICjiiJIxMDAg4oKsKSwgYWJlciBkaWUgUHLDpG1pZSBzY2jDvHR6dCBudXIgYmVncmVuenQuPC9pPgpXYXMgaXN0IGRlciA8Yj5CcmVha2V2ZW48L2I+IGVpbmVzIENvdmVyZWQgQ2FsbHM/CTxiPkJyZWFrZXZlbiA9IFPigoAg4oiSIEM8L2I+PGJyPjxicj5EaWUgZXJoYWx0ZW5lIFByw6RtaWUgc2Vua3QgZGllIGVmZmVrdGl2ZSBLb3N0ZW5iYXNpcy48YnI+PGJyPjxiPkJlaXNwaWVsOjwvYj4gU+KCgD0xMDAsIEM9NSDihpIgQnJlYWtldmVuID0gPGI+OTUg4oKsPC9iPjxicj48YnI+TGllZ3QgZGVyIEt1cnMgYmVpIFZlcmZhbGwgw7xiZXIgOTUg4oKsLCBpc3QgZGllIFBvc2l0aW9uIHByb2ZpdGFiZWwuCldpZSBzaWVodCBkYXMgPGI+UGF5b2ZmLURpYWdyYW1tPC9iPiBlaW5lcyBDb3ZlcmVkIENhbGxzIGF1cz8gKFPigoA9MTAwLCBLPTExMCwgQz01KQk8cHJlIHN0eWxlPSJmb250LWZhbWlseTptb25vc3BhY2U7IGZvbnQtc2l6ZToxMnB4OyI+ICBQJmFtcDtMPGJyPiAgIDE1IHwgICAgICAgICAgICAgICAgICAgICAgICBfX19fX19fX19fXzxicj4gICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAvPGJyPiAgIDEwIHwgICAgICAgICAgICAgICAgICAgICAgLzxicj4gICAgICB8ICAgICAgICAgICAgICAgICAgICAgLzxicj4gICAgNSB8Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi8gICAmbHQ7LSBQcsOkbWllPGJyPiAgICAgIHwgICAgICAgICAgICAgICAgICAgLzxicj4gICAgMCArLS0rLS0tKy0tLSstLS0tLS0tKy0tLS0rLS0tLT4gS3Vyczxicj4gICAgICB8ICA3MCAgODAgIDkwICAgICA5NSAgMTAwICAxMTA8YnI+ICAgLTUgfCAgICAgICAgICAgICAgICAgXiAgICBeICAgIF48YnI+ICAgICAgfCAgICAgICAgICAgICAgICAgQkUgICBT4oKAICAgSzxicj4gIC0yNSB8PGJyPjwvcHJlPjxicj48dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNCI+PHRyPjx0aD5ab25lPC90aD48dGg+S3VycyBiZWkgVmVyZmFsbDwvdGg+PHRoPlAmYW1wO0w8L3RoPjwvdHI+PHRyPjx0ZD5WZXJsdXN0PC90ZD48dGQ+U19UICZsdDsgOTU8L3RkPjx0ZD4mbHQ7IDA8L3RkPjwvdHI+PHRyPjx0ZD5CcmVha2V2ZW48L3RkPjx0ZD5TX1QgPSA5NTwvdGQ+PHRkPjA8L3RkPjwvdHI+PHRyPjx0ZD5HZXdpbm48L3RkPjx0ZD45NSAmbHQ7IFNfVCAmbHQ7IDExMDwvdGQ+PHRkPnN0ZWlndDwvdGQ+PC90cj48dHI+PHRkPjxiPk1heCBHZXdpbm48L2I+PC90ZD48dGQ+U19UIOKJpSAxMTA8L3RkPjx0ZD48Yj4xNSDigqwgKGdlZGVja2VsdCk8L2I+PC90ZD48L3RyPjwvdGFibGU+CldlbGNoZSA8Yj5HcmVla3M8L2I+IHNpbmQgYmVpbSBDb3ZlcmVkIENhbGwgcmVsZXZhbnQ/CTx0YWJsZSBib3JkZXI9IjEiIGNlbGxwYWRkaW5nPSI0Ij48dHI+PHRoPkdyZWVrPC90aD48dGg+V2VydDwvdGg+PHRoPkJlZGV1dHVuZzwvdGg+PC90cj48dHI+PHRkPjxiPkRlbHRhPC9iPjwvdGQ+PHRkPjAgYmlzICsxPC90ZD48dGQ+S2xlaW5lciBhbHMgcmVpbmVyIEFrdGllbmJlc2l0eiAoMSDiiJIgzpRfQ2FsbCk8L3RkPjwvdHI+PHRyPjx0ZD48Yj5UaGV0YTwvYj48L3RkPjx0ZD48YiBzdHlsZT0iY29sb3I6Z3JlZW4iPlBvc2l0aXYg4pyTPC9iPjwvdGQ+PHRkPlplaXR3ZXJ0dmVyZmFsbCBkZXMgdmVya2F1ZnRlbiBDYWxscyA9IGRlaW4gR2V3aW5uPC90ZD48L3RyPjx0cj48dGQ+PGI+VmVnYTwvYj48L3RkPjx0ZD48YiBzdHlsZT0iY29sb3I6cmVkIj5OZWdhdGl2PC9iPjwvdGQ+PHRkPkZhbGxlbmRlIElWIGlzdCB2b3J0ZWlsaGFmdCAoU2hvcnQgVmVnYSk8L3RkPjwvdHI+PHRyPjx0ZD48Yj5HYW1tYTwvYj48L3RkPjx0ZD5OZWdhdGl2PC90ZD48dGQ+U2hvcnQgQ2FsbCBlcnpldWd0IG5lZ2F0aXZlcyBHYW1tYTwvdGQ+PC90cj48L3RhYmxlPjxicj48Yj5UaGV0YSBpc3QgZGVpbiBGcmV1bmQ6PC9iPiBNaXQgamVkZXIgdmVyc3RyaWNoZW5lbiBOYWNodCB2ZXJsaWVydCBkZXIgQ2FsbCBhbiBXZXJ0IOKAlCBkYXMgaXN0IGRlaW4gR2V3aW5uLgo8Yj5Db3ZlcmVkIENhbGwgdnMuIHJlaW5lciBBa3RpZW5iZXNpdHo8L2I+IOKAlCBXYXMgc2luZCBkaWUgVW50ZXJzY2hpZWRlPwk8dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNCI+PHRyPjx0aD5NZXJrbWFsPC90aD48dGg+UmVpbmVyIEFrdGllbmJlc2l0ejwvdGg+PHRoPkNvdmVyZWQgQ2FsbDwvdGg+PC90cj48dHI+PHRkPk1heCBHZXdpbm48L3RkPjx0ZD5VbmJlZ3Jlbnp0PC90ZD48dGQ+R2VkZWNrZWx0OiAoS+KIklPigoApK0M8L3RkPjwvdHI+PHRyPjx0ZD5NYXggVmVybHVzdDwvdGQ+PHRkPuKIklPigoA8L3RkPjx0ZD7iiJIoU+KCgOKIkkMpIChQcsOkbWllIHJlZHV6aWVydCk8L3RkPjwvdHI+PHRyPjx0ZD5CcmVha2V2ZW48L3RkPjx0ZD5T4oKAPC90ZD48dGQ+U+KCgCDiiJIgQzwvdGQ+PC90cj48dHI+PHRkPkVpbmtvbW1lbjwvdGQ+PHRkPktlaW5zPC90ZD48dGQ+UHLDpG1pZSBDPC90ZD48L3RyPjx0cj48dGQ+QmVzdGUgTWFya3RsYWdlPC90ZD48dGQ+U3Rhcmsgc3RlaWdlbmQ8L3RkPjx0ZD5TZWl0d8OkcnRzIC8gbGVpY2h0IHN0ZWlnZW5kPC90ZD48L3RyPjwvdGFibGU+CldhcyBiZWRldXRldCA8Yj7igJ5Sb2xsaW5nIjwvYj4gYmVpbSBDb3ZlcmVkIENhbGw/CTxiPlJvbGxpbmc8L2I+ID0gQmVzdGVoZW5kZW4gQ2FsbCB6dXLDvGNra2F1ZmVuICsgbmV1ZW4gQ2FsbCB2ZXJrYXVmZW4uPGJyPjxicj48dGFibGUgYm9yZGVyPSIxIiBjZWxscGFkZGluZz0iNCI+PHRyPjx0aD5WYXJpYW50ZTwvdGg+PHRoPkJlZGV1dHVuZzwvdGg+PHRoPldhbm4/PC90aD48L3RyPjx0cj48dGQ+PGI+Um9sbCBvdXQ8L2I+PC90ZD48dGQ+R2xlaWNoZXIgU3RyaWtlLCBzcMOkdGVyZXMgRGF0dW08L3RkPjx0ZD5Bc3NpZ25tZW50IHZlcm1laWRlbjwvdGQ+PC90cj48dHI+PHRkPjxiPlJvbGwgdXA8L2I+PC90ZD48dGQ+SMO2aGVyZXIgU3RyaWtlPC90ZD48dGQ+QWt0aWUgZ2VzdGllZ2VuLCBtZWhyIFVwc2lkZTwvdGQ+PC90cj48dHI+PHRkPjxiPlJvbGwgZG93bjwvYj48L3RkPjx0ZD5OaWVkcmlnZXJlciBTdHJpa2U8L3RkPjx0ZD5NZWhyIFByw6RtaWUgKGjDtmhlcmVzIFJpc2lrbyk8L3RkPjwvdHI+PC90YWJsZT48YnI+PGk+WmllbDogQXNzaWdubWVudCB2ZXJ6w7ZnZXJuIG9kZXIgUHLDpG1pZW5laW5uYWhtZW4gb3B0aW1pZXJlbi48L2k+Cg=="}], "grading": {"expectations": [{"text": "A Mermaid diagram showing the payoff profile is included", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum gain formula and value are stated", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum loss and breakeven point are mentioned", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A concrete example with specific numbers is given", "passed": false, "evidence": "Auto-graded: FAIL"}, {"text": "TSV export is included with #separator:tab header", "passed": true, "evidence": "Auto-graded: PASS"}]}}, {"id": "eval-3-iv-cards-with_skill", "prompt": "Hier ist ein Abschnitt aus meinen Notizen \u2014 bitte erstelle daraus sinnvolle Anki-Karten:\n\n\"Implizite Volatilit\u00e4t (IV) spiegelt die Markterwartung zuk\u00fcnftiger Kursschwankungen wider. Hohe IV bedeutet teure Optionspr\u00e4mien, niedrige IV bedeutet g\u00fcnstige Pr\u00e4mien. IV crush passiert nach wichtigen Events wie Earnings \u2014 die IV f\u00e4llt schlagartig ab, was Long-Options-Inhaber schadet. Vega misst, wie stark sich der Optionspreis bei +1% IV-\u00c4nderung ver\u00e4ndert.\"", "eval_id": 3, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki-Karten: Implizite Volatilit\u00e4t, IV Crush & Vega\n\n## Deck-Struktur\n```\nOptionen::Volatilit\u00e4t::Implizite Volatilit\u00e4t\nOptionen::Volatilit\u00e4t::IV Crush\nOptionen::Griechen::Vega\n```\n\n---\n\n## Karte 1 \u2014 Basic (Optionen::Volatilit\u00e4t::Implizite Volatilit\u00e4t)\n\n**Vorderseite:**\nWas spiegelt die **Implizite Volatilit\u00e4t (IV)** einer Option wider?\n\n**R\u00fcckseite:**\nDie **Markterwartung zuk\u00fcnftiger Kursschwankungen** des Basiswerts.\n\nWichtig: IV ist zukunftsgerichtet \u2014 sie zeigt, welche Bewegung der Markt *erwartet*, nicht was historisch passiert ist.\n\nEselsbr\u00fccke: \u201eImplizit\" = der Markt hat diese Erwartung *implizit* in den Preis eingepreist.\n\n---\n\n## Karte 2 \u2014 Basic (Optionen::Volatilit\u00e4t::Implizite Volatilit\u00e4t)\n\n**Vorderseite:**\nDie IV einer Aktie steigt stark an. Was passiert mit den Optionspr\u00e4mien \u2014 und warum?\n\n**R\u00fcckseite:**\nDie Pr\u00e4mien werden **teurer**.\n\nGrund: H\u00f6here IV = Markt erwartet gr\u00f6\u00dfere Kursbewegungen = gr\u00f6\u00dferes Risiko f\u00fcr Optionsverk\u00e4ufer \u2192 Verk\u00e4ufer verlangen mehr Pr\u00e4mie.\n\nMerke: **Hohe IV = teure Pr\u00e4mien** (gut f\u00fcr Verk\u00e4ufer), **niedrige IV = g\u00fcnstige Pr\u00e4mien** (gut f\u00fcr K\u00e4ufer).\n\n---\n\n## Karte 3 \u2014 Basic (Optionen::Volatilit\u00e4t::IV Crush)\n\n**Vorderseite:**\nWas bedeutet **IV Crush** und nach welchem Ereignistyp tritt er typischerweise auf?\n\n**R\u00fcckseite:**\nNach wichtigen Ereignissen (z.B. **Earnings**, Notenbank-Entscheidungen) f\u00e4llt die IV **schlagartig** \u2014 dieser pl\u00f6tzliche R\u00fcckgang hei\u00dft IV Crush.\n\nGrund: Vor dem Event ist die Unsicherheit hoch \u2192 IV steigt. Nach dem Event ist die Unsicherheit aufgel\u00f6st \u2192 IV f\u00e4llt.\n\n---\n\n## Karte 4 \u2014 Basic (Optionen::Volatilit\u00e4t::IV Crush)\n\n**Vorderseite:**\nDu kaufst eine Call-Option vor einem Earnings-Report. Die Aktie steigt wie erwartet um 3% \u2014 dennoch verlierst du Geld mit der Option. Was ist die wahrscheinlichste Ursache?\n\n**R\u00fcckseite:**\n**IV Crush** \u2014 nach dem Earnings-Report ist die implizite Volatilit\u00e4t stark gefallen.\n\nDer Kursgewinn (positives Delta) wurde durch den Pr\u00e4mienverfall durch sinkende IV (negativer Vega-Effekt) \u00fcberkompensiert.\n\nMerke: Long Optionen haben **positives Vega** \u2192 IV Crush schadet Long-Inhabern direkt.\n\n---\n\n## Karte 5 \u2014 Basic (Optionen::Griechen::Vega)\n\n**Vorderseite:**\nWas misst **Vega** bei Optionen?\n\n**R\u00fcckseite:**\nVega misst, wie stark sich der **Optionspreis** bei einer IV-\u00c4nderung von **+1%** ver\u00e4ndert.\n\nBeispiel: Vega = 0.15 \u2192 Steigt IV um 1%, steigt der Optionspreis um ca. $0.15 (ceteris paribus).\n\nMerke: Long Optionen = positives Vega (profitieren von steigender IV), Short Optionen = negatives Vega.\n\n---\n\n## Karte 6 \u2014 Cloze (Optionen::Volatilit\u00e4t::Implizite Volatilit\u00e4t)\n\n**Text:**\nDie {{c1::Implizite Volatilit\u00e4t (IV)}} spiegelt die Markterwartung zuk\u00fcnftiger Kursschwankungen wider. Hohe IV bedeutet {{c2::teure}} Optionspr\u00e4mien, niedrige IV bedeutet {{c2::g\u00fcnstige}} Pr\u00e4mien. Nach Earnings f\u00e4llt die IV schlagartig \u2014 dieser Effekt hei\u00dft {{c3::IV Crush}} und schadet besonders {{c4::Long-Options-Inhabern}}.\n\n**Zusatzmaterial:**\nVega misst die Preis\u00e4nderung der Option bei +1% IV-\u00c4nderung.\n\n---\n\n## Karte 7 \u2014 Diagramm-Karte (Optionen::Griechen::Vega)\n\n**Vorderseite:**\nWie h\u00e4ngen Implizite Volatilit\u00e4t (IV), Vega und Optionspreis zusammen?\n\n**R\u00fcckseite:**\n\n```mermaid\nflowchart TD\n    IV[Implizite Volatilit\u00e4t IV] -->|gemessen durch| Vega[Vega\\n= Preis\u00e4nderung pro +1% IV]\n    Vega -->|beeinflusst| Preis[Optionspreis]\n    IV -->|steigt vor Event| High[Teure Pr\u00e4mien\\nHohe IV]\n    IV -->|f\u00e4llt nach Event| Crush[IV Crush\\nG\u00fcnstige Pr\u00e4mien]\n    Crush -->|schadet| Long[Long-Options-Inhaber\\npositives Vega]\n    Crush -->|n\u00fctzt| Short[Short-Options-Inhaber\\nnegatives Vega]\n```\n\nMerke: **IV \u2191 \u2192 Optionspreis \u2191** (f\u00fcr Long-Inhaber gut). **IV \u2193 (IV Crush) \u2192 Optionspreis \u2193** (f\u00fcr Long-Inhaber schlecht).\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,I3NlcGFyYXRvcjp0YWIKI2h0bWw6dHJ1ZQojbm90ZXR5cGU6QmFzaWMKV2FzIHNwaWVnZWx0IGRpZSA8Yj5JbXBsaXppdGUgVm9sYXRpbGl0w6R0IChJVik8L2I+IGVpbmVyIE9wdGlvbiB3aWRlcj8JRGllIDxiPk1hcmt0ZXJ3YXJ0dW5nIHp1a8O8bmZ0aWdlciBLdXJzc2Nod2Fua3VuZ2VuPC9iPiBkZXMgQmFzaXN3ZXJ0cy48YnI+PGJyPldpY2h0aWc6IElWIGlzdCB6dWt1bmZ0c2dlcmljaHRldCDigJQgc2llIHplaWd0LCB3ZWxjaGUgQmV3ZWd1bmcgZGVyIE1hcmt0IDxpPmVyd2FydGV0PC9pPiwgbmljaHQgd2FzIGhpc3RvcmlzY2ggcGFzc2llcnQgaXN0Ljxicj48YnI+PGI+RXNlbHNicsO8Y2tlOjwvYj4g4oCeSW1wbGl6aXQiID0gZGVyIE1hcmt0IGhhdCBkaWVzZSBFcndhcnR1bmcgPGk+aW1wbGl6aXQ8L2k+IGluIGRlbiBQcmVpcyBlaW5nZXByZWlzdC4KRGllIElWIGVpbmVyIEFrdGllIHN0ZWlndCBzdGFyayBhbi4gV2FzIHBhc3NpZXJ0IG1pdCBkZW4gT3B0aW9uc3Byw6RtaWVuIOKAlCB1bmQgd2FydW0/CURpZSBQcsOkbWllbiB3ZXJkZW4gPGI+dGV1cmVyPC9iPi48YnI+PGJyPkdydW5kOiBIw7ZoZXJlIElWID0gTWFya3QgZXJ3YXJ0ZXQgZ3LDtsOfZXJlIEt1cnNiZXdlZ3VuZ2VuID0gZ3LDtsOfZXJlcyBSaXNpa28gZsO8ciBPcHRpb25zdmVya8OkdWZlciDihpIgVmVya8OkdWZlciB2ZXJsYW5nZW4gbWVociBQcsOkbWllLjxicj48YnI+PGI+TWVya2U6PC9iPiA8Yj5Ib2hlIElWID0gdGV1cmUgUHLDpG1pZW48L2I+IChndXQgZsO8ciBWZXJrw6R1ZmVyKSwgPGI+bmllZHJpZ2UgSVYgPSBnw7xuc3RpZ2UgUHLDpG1pZW48L2I+IChndXQgZsO8ciBLw6R1ZmVyKS4KV2FzIGJlZGV1dGV0IDxiPklWIENydXNoPC9iPiB1bmQgbmFjaCB3ZWxjaGVtIEVyZWlnbmlzdHlwIHRyaXR0IGVyIHR5cGlzY2hlcndlaXNlIGF1Zj8JTmFjaCB3aWNodGlnZW4gRXJlaWduaXNzZW4gKHouQi4gPGI+RWFybmluZ3M8L2I+LCBOb3RlbmJhbmstRW50c2NoZWlkdW5nZW4pIGbDpGxsdCBkaWUgSVYgPGI+c2NobGFnYXJ0aWc8L2I+IOKAlCBkaWVzZXIgcGzDtnR6bGljaGUgUsO8Y2tnYW5nIGhlacOfdCBJViBDcnVzaC48YnI+PGJyPkdydW5kOiBWb3IgZGVtIEV2ZW50IGlzdCBkaWUgVW5zaWNoZXJoZWl0IGhvY2gg4oaSIElWIHN0ZWlndC4gTmFjaCBkZW0gRXZlbnQgaXN0IGRpZSBVbnNpY2hlcmhlaXQgYXVmZ2Vsw7ZzdCDihpIgSVYgZsOkbGx0LgpEdSBrYXVmc3QgZWluZSBDYWxsLU9wdGlvbiB2b3IgZWluZW0gRWFybmluZ3MtUmVwb3J0LiBEaWUgQWt0aWUgc3RlaWd0IHdpZSBlcndhcnRldCB1bSAzJSDigJQgZGVubm9jaCB2ZXJsaWVyc3QgZHUgR2VsZCBtaXQgZGVyIE9wdGlvbi4gV2FzIGlzdCBkaWUgd2FocnNjaGVpbmxpY2hzdGUgVXJzYWNoZT8JPGI+SVYgQ3J1c2g8L2I+IOKAlCBuYWNoIGRlbSBFYXJuaW5ncy1SZXBvcnQgaXN0IGRpZSBpbXBsaXppdGUgVm9sYXRpbGl0w6R0IHN0YXJrIGdlZmFsbGVuLjxicj48YnI+RGVyIEt1cnNnZXdpbm4gKHBvc2l0aXZlcyBEZWx0YSkgd3VyZGUgZHVyY2ggZGVuIFByw6RtaWVudmVyZmFsbCBkdXJjaCBzaW5rZW5kZSBJViAobmVnYXRpdmVyIFZlZ2EtRWZmZWt0KSDDvGJlcmtvbXBlbnNpZXJ0Ljxicj48YnI+PGI+TWVya2U6PC9iPiBMb25nIE9wdGlvbmVuIGhhYmVuIDxiPnBvc2l0aXZlcyBWZWdhPC9iPiDihpIgSVYgQ3J1c2ggc2NoYWRldCBMb25nLUluaGFiZXJuIGRpcmVrdC4KV2FzIG1pc3N0IDxiPlZlZ2E8L2I+IGJlaSBPcHRpb25lbj8JVmVnYSBtaXNzdCwgd2llIHN0YXJrIHNpY2ggZGVyIDxiPk9wdGlvbnNwcmVpczwvYj4gYmVpIGVpbmVyIElWLcOEbmRlcnVuZyB2b24gPGI+KzElPC9iPiB2ZXLDpG5kZXJ0Ljxicj48YnI+QmVpc3BpZWw6IFZlZ2EgPSAwLjE1IOKGkiBTdGVpZ3QgSVYgdW0gMSUsIHN0ZWlndCBkZXIgT3B0aW9uc3ByZWlzIHVtIGNhLiAkMC4xNSAoY2V0ZXJpcyBwYXJpYnVzKS48YnI+PGJyPjxiPk1lcmtlOjwvYj4gTG9uZyBPcHRpb25lbiA9IHBvc2l0aXZlcyBWZWdhIChwcm9maXRpZXJlbiB2b24gc3RlaWdlbmRlciBJViksIFNob3J0IE9wdGlvbmVuID0gbmVnYXRpdmVzIFZlZ2EuCldpZSBow6RuZ2VuIEltcGxpeml0ZSBWb2xhdGlsaXTDpHQgKElWKSwgVmVnYSB1bmQgT3B0aW9uc3ByZWlzIHp1c2FtbWVuPwk8Yj5JViDihpEg4oaSIE9wdGlvbnNwcmVpcyDihpE8L2I+IChmw7xyIExvbmctSW5oYWJlciBndXQpLiA8Yj5JViDihpMgKElWIENydXNoKSDihpIgT3B0aW9uc3ByZWlzIOKGkzwvYj4gKGbDvHIgTG9uZy1JbmhhYmVyIHNjaGxlY2h0KS48YnI+PGJyPlZlZ2EgbWlzc3QgZGllc2UgQWJow6RuZ2lna2VpdDogVmVnYSA9IFByZWlzw6RuZGVydW5nIGRlciBPcHRpb24gcHJvICsxJSBJVi3DhG5kZXJ1bmcuPGJyPjxicj48ZGl2IGNsYXNzPSJtZXJtYWlkIj5mbG93Y2hhcnQgVEQ8YnI+ICAgIElWW0ltcGxpeml0ZSBWb2xhdGlsaXTDpHQgSVZdIC0tPnxnZW1lc3NlbiBkdXJjaHwgVmVnYVtWZWdhID0gUHJlaXPDpG5kZXJ1bmcgcHJvICsxJSBJVl08YnI+ICAgIFZlZ2EgLS0+fGJlZWluZmx1c3N0fCBQcmVpc1tPcHRpb25zcHJlaXNdPGJyPiAgICBJViAtLT58c3RlaWd0IHZvciBFdmVudHwgSGlnaFtUZXVyZSBQcsOkbWllbl08YnI+ICAgIElWIC0tPnxmw6RsbHQgbmFjaCBFdmVudHwgQ3J1c2hbSVYgQ3J1c2hdPGJyPiAgICBDcnVzaCAtLT58c2NoYWRldHwgTG9uZ1tMb25nLU9wdGlvbnMtSW5oYWJlcl08YnI+ICAgIENydXNoIC0tPnxuw7x0enR8IFNob3J0W1Nob3J0LU9wdGlvbnMtSW5oYWJlcl08YnI+PC9kaXY+CiNub3RldHlwZTpDbG96ZQpEaWUge3tjMTo6SW1wbGl6aXRlIFZvbGF0aWxpdMOkdCAoSVYpfX0gc3BpZWdlbHQgZGllIE1hcmt0ZXJ3YXJ0dW5nIHp1a8O8bmZ0aWdlciBLdXJzc2Nod2Fua3VuZ2VuIHdpZGVyLiBIb2hlIElWIGJlZGV1dGV0IHt7YzI6OnRldXJlfX0gT3B0aW9uc3Byw6RtaWVuLCBuaWVkcmlnZSBJViBiZWRldXRldCB7e2MyOjpnw7xuc3RpZ2V9fSBQcsOkbWllbi4gTmFjaCBFYXJuaW5ncyBmw6RsbHQgZGllIElWIHNjaGxhZ2FydGlnIOKAlCBkaWVzZXIgRWZmZWt0IGhlacOfdCB7e2MzOjpJViBDcnVzaH19IHVuZCBzY2hhZGV0IGJlc29uZGVycyB7e2M0OjpMb25nLU9wdGlvbnMtSW5oYWJlcm59fS4JVmVnYSBtaXNzdCBkaWUgUHJlaXPDpG5kZXJ1bmcgZGVyIE9wdGlvbiBiZWkgKzElIElWLcOEbmRlcnVuZy4K"}], "grading": {"expectations": [{"text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card tests exactly one concept (atomic design)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "IV crush is explained with a concrete scenario", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one card includes a memory hook, analogy, or example", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "TSV export section is present and well-formed", "passed": true, "evidence": "Auto-graded: PASS"}]}}, {"id": "eval-3-iv-cards-without_skill", "prompt": "Hier ist ein Abschnitt aus meinen Notizen \u2014 bitte erstelle daraus sinnvolle Anki-Karten:\n\n\"Implizite Volatilit\u00e4t (IV) spiegelt die Markterwartung zuk\u00fcnftiger Kursschwankungen wider. Hohe IV bedeutet teure Optionspr\u00e4mien, niedrige IV bedeutet g\u00fcnstige Pr\u00e4mien. IV crush passiert nach wichtigen Events wie Earnings \u2014 die IV f\u00e4llt schlagartig ab, was Long-Options-Inhaber schadet. Vega misst, wie stark sich der Optionspreis bei +1% IV-\u00c4nderung ver\u00e4ndert.\"", "eval_id": 3, "outputs": [{"name": "cards.md", "type": "text", "content": "# Anki Flashcards: Implizite Volatilit\u00e4t (IV)\n\n---\n\n**Card 1**\nQ: Was ist implizite Volatilit\u00e4t (IV)?\nA: Die implizite Volatilit\u00e4t spiegelt die **Markterwartung zuk\u00fcnftiger Kursschwankungen** wider. Sie wird aus aktuellen Optionspreisen abgeleitet \u2014 nicht aus historischen Kursdaten.\n\n---\n\n**Card 2**\nQ: Was bedeutet hohe implizite Volatilit\u00e4t (IV) f\u00fcr Optionspr\u00e4mien?\nA: Hohe IV \u2192 **teure Optionspr\u00e4mien**. Der Markt erwartet gro\u00dfe Kursbewegungen, daher zahlen K\u00e4ufer mehr f\u00fcr den Schutz oder die Spekulation.\n\n---\n\n**Card 3**\nQ: Was bedeutet niedrige implizite Volatilit\u00e4t (IV) f\u00fcr Optionspr\u00e4mien?\nA: Niedrige IV \u2192 **g\u00fcnstige Optionspr\u00e4mien**. Der Markt erwartet geringe Kursschwankungen, daher sind Optionen billiger.\n\n---\n\n**Card 4**\nQ: Was ist ein IV Crush?\nA: Ein IV Crush tritt auf, wenn die implizite Volatilit\u00e4t **nach einem wichtigen Event (z. B. Earnings) schlagartig abf\u00e4llt** \u2014 weil die Unsicherheit aufgel\u00f6st wurde.\n\n---\n\n**Card 5**\nQ: Wann tritt ein IV Crush typischerweise auf?\nA: Nach **wichtigen Ereignissen** wie Quartalsergebnissen (Earnings), Notenbanksitzungen (Fed) oder anderen marktbewegenden Events.\n\n---\n\n**Card 6**\nQ: Wen schadet ein IV Crush?\nA: IV Crush schadet **Long-Options-Inhabern (K\u00e4ufern)**: Selbst wenn die Kursbewegung eintritt, kann der Pr\u00e4mienverfall durch den IV-R\u00fcckgang die Gewinne zunichte machen.\n\n---\n\n**Card 7**\nQ: Was misst Vega?\nA: Vega misst, wie stark sich der **Optionspreis bei einer Ver\u00e4nderung der IV um +1%** ver\u00e4ndert. Vega ist positiv f\u00fcr Long-Optionen.\n\n---\n\n**Card 8**\nQ: Wie wirkt sich ein hoher Vega-Wert auf eine Long-Option bei IV Crush aus?\nA: Ein hoher Vega bedeutet, dass die Option **stark auf IV-\u00c4nderungen reagiert**. Bei einem IV Crush f\u00e4llt der Optionspreis daher umso st\u00e4rker.\n"}, {"name": "cards.tsv", "type": "binary", "mime": "text/tab-separated-values", "data_uri": "data:text/tab-separated-values;base64,V2FzIGlzdCBpbXBsaXppdGUgVm9sYXRpbGl0w6R0IChJVik/CURpZSBpbXBsaXppdGUgVm9sYXRpbGl0w6R0IHNwaWVnZWx0IGRpZSBNYXJrdGVyd2FydHVuZyB6dWvDvG5mdGlnZXIgS3Vyc3NjaHdhbmt1bmdlbiB3aWRlci4gU2llIHdpcmQgYXVzIGFrdHVlbGxlbiBPcHRpb25zcHJlaXNlbiBhYmdlbGVpdGV0IOKAlCBuaWNodCBhdXMgaGlzdG9yaXNjaGVuIEt1cnNkYXRlbi4JaXYgb3B0aW9ucy1iYXNpY3MKV2FzIGJlZGV1dGV0IGhvaGUgaW1wbGl6aXRlIFZvbGF0aWxpdMOkdCAoSVYpIGbDvHIgT3B0aW9uc3Byw6RtaWVuPwlIb2hlIElWIOKGkiB0ZXVyZSBPcHRpb25zcHLDpG1pZW4uIERlciBNYXJrdCBlcndhcnRldCBncm/Dn2UgS3Vyc2Jld2VndW5nZW4sIGRhaGVyIHphaGxlbiBLw6R1ZmVyIG1laHIgZsO8ciBkZW4gU2NodXR6IG9kZXIgZGllIFNwZWt1bGF0aW9uLglpdiBvcHRpb25zLWJhc2ljcwpXYXMgYmVkZXV0ZXQgbmllZHJpZ2UgaW1wbGl6aXRlIFZvbGF0aWxpdMOkdCAoSVYpIGbDvHIgT3B0aW9uc3Byw6RtaWVuPwlOaWVkcmlnZSBJViDihpIgZ8O8bnN0aWdlIE9wdGlvbnNwcsOkbWllbi4gRGVyIE1hcmt0IGVyd2FydGV0IGdlcmluZ2UgS3Vyc3NjaHdhbmt1bmdlbiwgZGFoZXIgc2luZCBPcHRpb25lbiBiaWxsaWdlci4JaXYgb3B0aW9ucy1iYXNpY3MKV2FzIGlzdCBlaW4gSVYgQ3J1c2g/CUVpbiBJViBDcnVzaCB0cml0dCBhdWYsIHdlbm4gZGllIGltcGxpeml0ZSBWb2xhdGlsaXTDpHQgbmFjaCBlaW5lbSB3aWNodGlnZW4gRXZlbnQgKHouIEIuIEVhcm5pbmdzKSBzY2hsYWdhcnRpZyBhYmbDpGxsdCDigJQgd2VpbCBkaWUgVW5zaWNoZXJoZWl0IGF1ZmdlbMO2c3Qgd3VyZGUuCWl2LWNydXNoIG9wdGlvbnMtcmlza3MKV2FubiB0cml0dCBlaW4gSVYgQ3J1c2ggdHlwaXNjaGVyd2Vpc2UgYXVmPwlOYWNoIHdpY2h0aWdlbiBFcmVpZ25pc3NlbiB3aWUgUXVhcnRhbHNlcmdlYm5pc3NlbiAoRWFybmluZ3MpLCBOb3RlbmJhbmtzaXR6dW5nZW4gKEZlZCkgb2RlciBhbmRlcmVuIG1hcmt0YmV3ZWdlbmRlbiBFdmVudHMuCWl2LWNydXNoIGV2ZW50cwpXZW4gc2NoYWRldCBlaW4gSVYgQ3J1c2g/CUlWIENydXNoIHNjaGFkZXQgTG9uZy1PcHRpb25zLUluaGFiZXJuIChLw6R1ZmVybik6IFNlbGJzdCB3ZW5uIGRpZSBLdXJzYmV3ZWd1bmcgZWludHJpdHQsIGthbm4gZGVyIFByw6RtaWVudmVyZmFsbCBkdXJjaCBkZW4gSVYtUsO8Y2tnYW5nIGRpZSBHZXdpbm5lIHp1bmljaHRlIG1hY2hlbi4JaXYtY3J1c2ggb3B0aW9ucy1yaXNrcwpXYXMgbWlzc3QgVmVnYT8JVmVnYSBtaXNzdCwgd2llIHN0YXJrIHNpY2ggZGVyIE9wdGlvbnNwcmVpcyBiZWkgZWluZXIgVmVyw6RuZGVydW5nIGRlciBJViB1bSArMSUgdmVyw6RuZGVydC4gVmVnYSBpc3QgcG9zaXRpdiBmw7xyIExvbmctT3B0aW9uZW4uCWdyZWVrcyB2ZWdhCldpZSB3aXJrdCBzaWNoIGVpbiBob2hlciBWZWdhLVdlcnQgYXVmIGVpbmUgTG9uZy1PcHRpb24gYmVpIElWIENydXNoIGF1cz8JRWluIGhvaGVyIFZlZ2EgYmVkZXV0ZXQsIGRhc3MgZGllIE9wdGlvbiBzdGFyayBhdWYgSVYtw4RuZGVydW5nZW4gcmVhZ2llcnQuIEJlaSBlaW5lbSBJViBDcnVzaCBmw6RsbHQgZGVyIE9wdGlvbnNwcmVpcyBkYWhlciB1bXNvIHN0w6Rya2VyLglncmVla3MgdmVnYSBpdi1jcnVzaAo="}], "grading": {"expectations": [{"text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card tests exactly one concept (atomic design)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "IV crush is explained with a concrete scenario", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one card includes a memory hook, analogy, or example", "passed": false, "evidence": "Auto-graded: FAIL"}, {"text": "TSV export section is present and well-formed", "passed": false, "evidence": "Auto-graded: FAIL"}]}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"skill_name": "anki-cards", "iteration": 1, "configurations": [{"name": "with_skill", "label": "With anki-cards Skill", "evals": [{"eval_id": "eval-1-greeks", "eval_name": "Greeks Cards German", "prompt": "Erstelle Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega auf Deutsch.", "pass_count": 5, "total_assertions": 5, "pass_rate": 1.0, "assertions": [{"text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A TSV export section with #separator:tab and #html:true headers is present", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Cards are written in German (German terms and explanations)", "passed": true, "evidence": "Auto-graded: PASS"}]}, {"eval_id": "eval-2-covered-call", "eval_name": "Covered Call Payoff Diagram", "prompt": "Anki-Karten f\u00fcr die Covered Call Strategie mit Payoff-Diagramm.", "pass_count": 5, "total_assertions": 5, "pass_rate": 1.0, "assertions": [{"text": "A Mermaid diagram showing the payoff profile is included", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum gain formula and value are stated", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum loss and breakeven point are mentioned", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A concrete example with specific numbers is given", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "TSV export is included with #separator:tab header", "passed": true, "evidence": "Auto-graded: PASS"}]}, {"eval_id": "eval-3-iv-cards", "eval_name": "IV Cards From Notes", "prompt": "Erstelle Anki-Karten aus Notizen zur impliziten Volatilit\u00e4t.", "pass_count": 5, "total_assertions": 5, "pass_rate": 1.0, "assertions": [{"text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card tests exactly one concept (atomic design)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "IV crush is explained with a concrete scenario", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one card includes a memory hook, analogy, or example", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "TSV export section is present and well-formed", "passed": true, "evidence": "Auto-graded: PASS"}]}], "overall_pass_rate": 1.0, "total_passed": 15, "total_assertions": 15}, {"name": "without_skill", "label": "Baseline (No Skill)", "evals": [{"eval_id": "eval-1-greeks", "eval_name": "Greeks Cards German", "prompt": "Erstelle Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega auf Deutsch.", "pass_count": 5, "total_assertions": 5, "pass_rate": 1.0, "assertions": [{"text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A TSV export section with #separator:tab and #html:true headers is present", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Cards are written in German (German terms and explanations)", "passed": true, "evidence": "Auto-graded: PASS"}]}, {"eval_id": "eval-2-covered-call", "eval_name": "Covered Call Payoff Diagram", "prompt": "Anki-Karten f\u00fcr die Covered Call Strategie mit Payoff-Diagramm.", "pass_count": 4, "total_assertions": 5, "pass_rate": 0.8, "assertions": [{"text": "A Mermaid diagram showing the payoff profile is included", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum gain formula and value are stated", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Maximum loss and breakeven point are mentioned", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "A concrete example with specific numbers is given", "passed": false, "evidence": "Auto-graded: FAIL"}, {"text": "TSV export is included with #separator:tab header", "passed": true, "evidence": "Auto-graded: PASS"}]}, {"eval_id": "eval-3-iv-cards", "eval_name": "IV Cards From Notes", "prompt": "Erstelle Anki-Karten aus Notizen zur impliziten Volatilit\u00e4t.", "pass_count": 3, "total_assertions": 5, "pass_rate": 0.6, "assertions": [{"text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "Each card tests exactly one concept (atomic design)", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "IV crush is explained with a concrete scenario", "passed": true, "evidence": "Auto-graded: PASS"}, {"text": "At least one card includes a memory hook, analogy, or example", "passed": false, "evidence": "Auto-graded: FAIL"}, {"text": "TSV export section is present and well-formed", "passed": false, "evidence": "Auto-graded: FAIL"}]}], "overall_pass_rate": 0.8, "total_passed": 12, "total_assertions": 15}]}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

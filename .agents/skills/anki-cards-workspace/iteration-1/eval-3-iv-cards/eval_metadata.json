@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "iv-atomic-cards-from-notes",
+  "prompt": "Hier ist ein Abschnitt aus meinen Notizen — bitte erstelle daraus sinnvolle Anki-Karten:\n\n\"Implizite Volatilität (IV) spiegelt die Markterwartung zukünftiger Kursschwankungen wider. Hohe IV bedeutet teure Optionsprämien, niedrige IV bedeutet günstige Prämien. IV crush passiert nach wichtigen Events wie Earnings — die IV fällt schlagartig ab, was Long-Options-Inhaber schadet. Vega misst, wie stark sich der Optionspreis bei +1% IV-Änderung verändert.\"",
+  "assertions": [
+    "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega",
+    "Each card tests exactly one concept (atomic design — not one card asking about all of IV)",
+    "IV crush is explained with a concrete scenario (e.g., before/after earnings)",
+    "At least one card includes a memory hook, analogy, or example",
+    "TSV export section is present and well-formed"
+  ]
+}

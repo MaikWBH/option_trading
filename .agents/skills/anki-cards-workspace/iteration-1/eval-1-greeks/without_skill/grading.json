@@ -1,0 +1,29 @@
+{
+  "expectations": [
+    {
+      "text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "A TSV export section with #separator:tab and #html:true headers is present",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "Cards are written in German (German terms and explanations)",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+flowchart LR
+    P["Optionspreis / Prämie"] --> I["Innerer Wert"]
+    P --> Z["Zeitwert"]
+    I --> I1["Abstand Kurs zu Strike<br/>nur wenn ITM"]
+    Z --> Z1["Restlaufzeit → Theta"]
+    Z --> Z2["Implizite Volatilität → Vega"]
+    Z --> Z3["Zinsniveau → Rho"]

@@ -1,0 +1,4 @@
+flowchart TD
+    S["Du besitzt 100 Aktien (Kauf zu 50 $)<br/>und verkaufst einen Call<br/>Strike 55 $ · Prämie 1,50 $"] --> E{"Wo steht der Kurs<br/>am Verfallstag?"}
+    E -->|"unter 55 $"| A["Call verfällt wertlos<br/>Du behältst Aktien + 150 $ Prämie<br/>➜ Zusatzeinkommen ('zweite Dividende')"]
+    E -->|"über 55 $"| B["Andienung: Aktien werden zu 55 $ verkauft<br/>Gewinn = Kursgewinn (5 $) + Prämie (1,50 $)<br/>➜ nach oben gedeckelt"]

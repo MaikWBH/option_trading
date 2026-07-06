@@ -1,0 +1,5 @@
+flowchart LR
+    A["1 · Cash-Secured Put verkaufen<br/>Prämie kassieren"] -->|"nicht angedient"| A
+    A -->|"angedient → Aktien im Depot"| B["2 · Covered Call verkaufen<br/>Prämie kassieren"]
+    B -->|"nicht angedient"| B
+    B -->|"angedient → Aktien verkauft"| A

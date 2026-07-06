@@ -1,0 +1,29 @@
+{
+  "expectations": [
+    {
+      "text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "Each card tests exactly one concept (atomic design)",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "IV crush is explained with a concrete scenario",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "At least one card includes a memory hook, analogy, or example",
+      "passed": false,
+      "evidence": "Auto-graded: FAIL"
+    },
+    {
+      "text": "TSV export section is present and well-formed",
+      "passed": false,
+      "evidence": "Auto-graded: FAIL"
+    }
+  ]
+}

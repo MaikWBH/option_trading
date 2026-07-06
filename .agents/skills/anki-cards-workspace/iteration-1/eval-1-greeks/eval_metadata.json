@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "greeks-cards-german",
+  "prompt": "Ich lerne gerade Optionshandel und habe die Greeks noch nicht wirklich verstanden. Erstelle mir Anki-Karten für Delta, Gamma, Theta und Vega — auf Deutsch. Ich bin Anfänger, also bitte mit guten Erklärungen und Beispielen. Wenn ein Diagramm helfen würde, füge es ein.",
+  "assertions": [
+    "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega",
+    "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)",
+    "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)",
+    "A TSV export section with #separator:tab and #html:true headers is present",
+    "Cards are written in German (German terms and explanations)"
+  ]
+}

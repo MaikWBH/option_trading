@@ -1,0 +1,29 @@
+{
+  "expectations": [
+    {
+      "text": "A Mermaid diagram showing the payoff profile is included",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "Maximum gain formula and value are stated",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "Maximum loss and breakeven point are mentioned",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "A concrete example with specific numbers is given",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    },
+    {
+      "text": "TSV export is included with #separator:tab header",
+      "passed": true,
+      "evidence": "Auto-graded: PASS"
+    }
+  ]
+}

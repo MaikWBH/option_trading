@@ -1,0 +1,25 @@
+#separator:tab
+#html:true
+#notetype:Basic
+#deck:Optionen::Strategien::Covered Call
+Was sind die zwei Komponenten eines Covered Calls?	1. <b>Long Stock</b> — Du besitzt bereits 100 Aktien des Underlyings.<br>2. <b>Short Call</b> — Du verkaufst eine Call-Option auf dieselbe Aktie.<br><br>Die Option ist &ldquo;covered&rdquo; (gedeckt), weil du die Aktien bereits hältst und sie im Ausübungsfall direkt liefern kannst.
+Welche Markterwartung rechtfertigt den Einsatz eines Covered Calls?	<b>Neutral bis leicht bullisch.</b><br><br>Geeignet wenn:<br><ul><li>Du die Aktie bereits besitzt und halten willst</li><li>Du einen stabilen oder moderat steigenden Kurs erwartest</li><li>Du <b>kein</b> starkes Kursanstiegspotenzial siehst</li><li>Du laufende Prämieneinnahmen generieren willst</li></ul><b>Nicht geeignet wenn:</b> Du einen starken Kursanstieg erwartest — Gewinne sind durch den Strike gedeckelt.
+Wie sieht das Payoff-Profil eines Covered Calls bei Verfall aus?<br>(Aktie gekauft bei $50 | Short Call Strike $55 | Prämie erhalten: $2)	"<div class=""mermaid"">
+xychart-beta
+    title ""Covered Call Payoff bei Verfall""
+    x-axis [40, 42, 44, 46, 48, 50, 52, 54, 55, 57, 60]
+    y-axis ""Gewinn/Verlust ($/Aktie)"" -10 10
+    line [-8, -6, -4, -2, 0, 2, 4, 6, 7, 7, 7]
+</div><br><br><table><tr><th>Kennzahl</th><th>Wert</th><th>Formel</th></tr><tr><td><b>Breakeven</b></td><td>$48</td><td>Kaufpreis &minus; Prämie</td></tr><tr><td><b>Max. Gewinn</b></td><td>$7</td><td>(Strike &minus; Kaufpreis) + Prämie</td></tr><tr><td><b>Max. Verlust</b></td><td>$48/Aktie</td><td>Kaufpreis &minus; Prämie (bei S&rarr;0)</td></tr></table><br><small><i>Mermaid-Rendering erfordert mermaid.js im Kartentemplate (einmalig).</i></small>"
+Covered Call: Aktie bei $50 gekauft, Call Strike $55 verkauft, Prämie $2 erhalten.<br>Was ist der <b>maximale Gewinn</b> pro Aktie, und wann tritt er ein?	<b>$7 pro Aktie</b>, wenn der Aktienkurs bei Verfall <b>&ge; Strike ($55)</b> liegt.<br><br>Formel: <b>Max. Gewinn = (Strike &minus; Kaufpreis) + Prämie</b><br>= (55 &minus; 50) + 2 = <b>$7</b><br><br><ul><li>Kursgewinn bis zum Strike: $5</li><li>Prämieneinnahme: $2</li><li>Gewinne &uuml;ber $55 hinaus gehen an den Call-Käufer</li></ul>
+Covered Call: Aktie bei $50 gekauft, Prämie $2 erhalten.<br>Was ist der <b>maximale Verlust</b> pro Aktie?	<b>$48 pro Aktie</b> &mdash; im theoretischen Fall, dass die Aktie auf $0 fällt.<br><br>Formel: <b>Max. Verlust = Kaufpreis &minus; Prämie</b><br>= 50 &minus; 2 = <b>$48</b><br><br>Die Prämie puffert den Verlust leicht ab, eliminiert das Downside-Risiko aber <b>nicht</b>. Für echten Schutz nach unten bräuchtest du einen Protective Put.
+Du hast einen Covered Call: Aktie Einstieg $50, Call Strike $55, Prämie $2 erhalten.<br>Die Aktie steigt auf $70. Was passiert, und was kostet dich das?	Die Call-Option wird ausgeübt. Du <b>musst</b> deine Aktien zum Strike $55 liefern.<br><br><ul><li><b>Dein Gewinn:</b> $7 (= $5 Kursgewinn + $2 Prämie)</li><li><b>Entgangener Gewinn:</b> $15 (= $70 &minus; $55 &mdash; geht an den Call-Käufer)</li></ul><b>Opportunity Cost</b> ist das Hauptrisiko des Covered Calls: Du verkaufst das Upside-Potenzial gegen eine begrenzte Prämie.
+Nenne die drei wichtigsten Kennzahlen des Covered Calls als Formeln.<br>(Kaufpreis = K, Strike = S, Prämie = P)	<table><tr><th>Kennzahl</th><th>Formel</th><th>Beispiel (K=$50, S=$55, P=$2)</th></tr><tr><td><b>Max. Gewinn</b></td><td>(S &minus; K) + P</td><td><b>$7</b></td></tr><tr><td><b>Max. Verlust</b></td><td>K &minus; P</td><td><b>$48</b></td></tr><tr><td><b>Breakeven</b></td><td>K &minus; P</td><td><b>$48</b></td></tr></table><br>Max. Verlust und Breakeven haben dieselbe Formel &mdash; der Gewinn ist nach oben durch den Strike <b>gedeckelt</b>.
+
+
+# ── Cloze-Karten (als separate Importdatei importieren) ──
+#separator:tab
+#html:true
+#notetype:Cloze
+#deck:Optionen::Strategien::Covered Call
+Beim Covered Call liegt der Breakeven-Punkt bei {{c1::Kaufpreis &minus; Prämie}}.<br><br>Beispiel: Aktie gekauft bei <b>$50</b>, Call-Prämie erhalten <b>$2</b> &rarr; Breakeven = {{c2::$48}}.	Unterhalb von $48 macht die Gesamtposition Verlust &mdash; trotz der erhaltenen Prämie.

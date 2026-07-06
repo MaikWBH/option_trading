@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01_call_put_entscheidung",
+    "code": "flowchart TD\n    A[\"Du hast eine Markterwartung\"] --> B{\"Steigt oder fällt der Kurs?\"}\n    B -->|\"Ich erwarte steigende Kurse\"| C[\"CALL kaufen<br/>= Recht zu KAUFEN\"]\n    B -->|\"Ich erwarte fallende Kurse\"| D[\"PUT kaufen<br/>= Recht zu VERKAUFEN\"]"
+  },
+  {
+    "id": "02_vier_grundpositionen",
+    "code": "flowchart TB\n    O[\"Optionsgeschäft\"] --> K[\"Käufer / Long<br/>zahlt Prämie · hat das Recht\"]\n    O --> V[\"Verkäufer / Stillhalter / Short<br/>erhält Prämie · hat die Pflicht\"]\n    K --> LC[\"Long Call<br/>setzt auf steigende Kurse\"]\n    K --> LP[\"Long Put<br/>setzt auf fallende Kurse\"]\n    V --> SC[\"Short Call<br/>Kurs soll NICHT stark steigen\"]\n    V --> SP[\"Short Put<br/>Kurs soll NICHT stark fallen\"]"
+  },
+  {
+    "id": "03_preis_bausteine",
+    "code": "flowchart LR\n    P[\"Optionspreis / Prämie\"] --> I[\"Innerer Wert\"]\n    P --> Z[\"Zeitwert\"]\n    I --> I1[\"Abstand Kurs zu Strike<br/>nur wenn ITM\"]\n    Z --> Z1[\"Restlaufzeit → Theta\"]\n    Z --> Z2[\"Implizite Volatilität → Vega\"]\n    Z --> Z3[\"Zinsniveau → Rho\"]"
+  },
+  {
+    "id": "04_cash_secured_put",
+    "code": "flowchart TD\n    S[\"Du verkaufst einen Put<br/>Strike 50 $ · Prämie 1,50 $<br/>5.000 $ als Sicherheit hinterlegt\"] --> E{\"Wo steht der Kurs<br/>am Verfallstag?\"}\n    E -->|\"über 50 $\"| A[\"Put verfällt wertlos<br/>Du behältst 150 $ Prämie<br/>➜ Gewinn ohne Aktienkauf\"]\n    E -->|\"unter 50 $\"| B[\"Andienung: Du kaufst 100 Aktien zu 50 $<br/>Effektiver Einstand = 48,50 $<br/>➜ günstiger Einstieg wie geplant\"]"
+  },
+  {
+    "id": "05_covered_call",
+    "code": "flowchart TD\n    S[\"Du besitzt 100 Aktien (Kauf zu 50 $)<br/>und verkaufst einen Call<br/>Strike 55 $ · Prämie 1,50 $\"] --> E{\"Wo steht der Kurs<br/>am Verfallstag?\"}\n    E -->|\"unter 55 $\"| A[\"Call verfällt wertlos<br/>Du behältst Aktien + 150 $ Prämie<br/>➜ Zusatzeinkommen ('zweite Dividende')\"]\n    E -->|\"über 55 $\"| B[\"Andienung: Aktien werden zu 55 $ verkauft<br/>Gewinn = Kursgewinn (5 $) + Prämie (1,50 $)<br/>➜ nach oben gedeckelt\"]"
+  },
+  {
+    "id": "06_the_wheel",
+    "code": "flowchart LR\n    A[\"1 · Cash-Secured Put verkaufen<br/>Prämie kassieren\"] -->|\"nicht angedient\"| A\n    A -->|\"angedient → Aktien im Depot\"| B[\"2 · Covered Call verkaufen<br/>Prämie kassieren\"]\n    B -->|\"nicht angedient\"| B\n    B -->|\"angedient → Aktien verkauft\"| A"
+  },
+  {
+    "id": "07_kontotyp",
+    "code": "flowchart TD\n    Q{\"Welcher Kontotyp?\"} --> C[\"Cash-Konto<br/>Nur eigenes Geld<br/>Konservativ, weniger Strategien\"]\n    Q --> M[\"Margin-Konto (Reg-T)<br/>Handel auf Kreditbasis möglich<br/>Nötig für die meisten Optionsstrategien\"]"
+  },
+  {
+    "id": "08_order_ablauf",
+    "code": "flowchart TD\n    A[\"Basiswert suchen (z. B. AAPL)\"] --> B[\"Optionskette / Option Chain öffnen\"]\n    B --> C[\"Verfallsdatum wählen (z. B. 30-45 Tage)\"]\n    C --> D[\"Strike wählen (z. B. Delta ~0,30 für Puts)\"]\n    D --> E[\"Aktion wählen: Verkaufen (Sell)\"]\n    E --> F[\"Ordertyp = LIMIT\"]\n    F --> G[\"Preis nahe Mittelkurs / Mid setzen\"]\n    G --> H[\"Order prüfen: 1 Kontrakt = 100 Stück,<br/>Margin, Gebühren\"]\n    H --> I[\"Übermitteln (Transmit)\"]"
+  },
+  {
+    "id": "09_andienung_sequence",
+    "code": "sequenceDiagram\n    participant K as Käufer (Long)\n    participant B as Clearingstelle (OCC)\n    participant S as Stillhalter (Du / Short)\n    K->>B: Übt die Option aus (Exercise)\n    B->>S: Teilt die Pflicht zu (Assignment)\n    S->>K: Liefert bzw. kauft 100 Aktien zum Strike\n    Note over S: Pflicht erfüllt · die Prämie bleibt dir"
+  },
+  {
+    "id": "10_risikomanagement",
+    "code": "flowchart TD\n    R[\"Risikomanagement\"] --> P[\"Positionsgröße:<br/>pro Trade nur ein kleiner Teil des Depots\"]\n    R --> D[\"Diversifikation:<br/>verschiedene Aktien & Branchen\"]\n    R --> Q[\"Qualität:<br/>nur Aktien, die du wirklich halten willst\"]\n    R --> I[\"Timing:<br/>bevorzugt bei hoher Volatilität verkaufen\"]\n    R --> E[\"Ausstieg:<br/>Gewinne früh mitnehmen (z. B. bei 50 %)\"]"
+  }
+]

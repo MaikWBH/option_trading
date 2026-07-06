@@ -1,0 +1,44 @@
+{
+  "skill_name": "anki-cards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Ich lerne gerade Optionshandel und habe die Greeks noch nicht wirklich verstanden. Erstelle mir Anki-Karten für Delta, Gamma, Theta und Vega — auf Deutsch. Ich bin Anfänger, also bitte mit guten Erklärungen und Beispielen. Wenn ein Diagramm helfen würde, füge es ein.",
+      "expected_output": "4 gut strukturierte Basic-Karten (je eine für Delta, Gamma, Theta, Vega) auf Deutsch mit konkreten Beispielen (z.B. '$1 Bewegung → Delta × $1 Preisänderung'), Memory Hooks/Eselsbrücken, mindestens einem Mermaid-Diagramm das Beziehungen visualisiert, und einer validen TSV-Export-Datei im Anki-Format.",
+      "files": [],
+      "expectations": [
+        "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega",
+        "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)",
+        "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)",
+        "A TSV export section with #separator:tab and #html:true headers is present",
+        "Cards are written in German (German terms and explanations)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Mach mir Anki-Karten für die Covered Call Strategie. Ich will verstehen wann ich sie einsetze, wie das Payoff aussieht, und was der maximale Gewinn/Verlust ist. Am liebsten mit einem Payoff-Diagramm.",
+      "expected_output": "Mehrere Karten zur Covered Call Strategie mit: wann einsetzen (Markterwartung), Mechanismus (Short Call + Long Stock), Payoff-Profil als Mermaid xychart-beta oder flowchart, maximaler Gewinn/Verlust/Breakeven Formeln mit Zahlenbeispiel, und TSV-Export.",
+      "files": [],
+      "expectations": [
+        "A Mermaid diagram showing the payoff profile is included (xychart-beta or flowchart)",
+        "Maximum gain formula and value are stated (premium + price difference to strike)",
+        "Maximum loss and breakeven point are mentioned",
+        "A concrete example with specific numbers (stock price, strike price, premium) is given",
+        "TSV export is included with #separator:tab header"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Hier ist ein Abschnitt aus meinen Notizen — bitte erstelle daraus sinnvolle Anki-Karten:\n\n\"Implizite Volatilität (IV) spiegelt die Markterwartung zukünftiger Kursschwankungen wider. Hohe IV bedeutet teure Optionsprämien, niedrige IV bedeutet günstige Prämien. IV crush passiert nach wichtigen Events wie Earnings — die IV fällt schlagartig ab, was Long-Options-Inhaber schadet. Vega misst, wie stark sich der Optionspreis bei +1% IV-Änderung verändert.\"",
+      "expected_output": "3-4 atomare Karten die verschiedene Facetten der impliziten Volatilität abdecken: Definition IV, Zusammenhang IV ↔ Prämie, IV Crush Phänomen, Vega-Definition mit Zahlenbeispiel. Jede Karte deckt genau einen Aspekt ab (atomare Karten). TSV-Export vorhanden.",
+      "files": [],
+      "expectations": [
+        "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega",
+        "Each card tests exactly one concept (atomic design — not one card asking about all of IV)",
+        "IV crush is explained with a concrete scenario (e.g., before/after earnings)",
+        "At least one card includes a memory hook, analogy, or example",
+        "TSV export section is present and well-formed"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+#separator:tab
+#html:true
+As a trader, on what should your focus be? 	Becoming a better trader 
+What is options trading? 	The buying and selling of stock option contracts 
+Describe a call	A call gives you the right, but not the obligation, to buy stocks at a set price
+Describe a put	A put gives you the right, but not the obligation, to sell stocks at a set price, on or before a given date 
+What are the 2 most important factors to consider when buying and selling options contracts?	strike price<div>time left until expiration</div>
+What is the strike price?	The price at which stocks are valued for a particular contract
+What is another term for the market price of a stock option?	premium<div><br></div><div>or&nbsp;</div><div><br></div><div>ask price</div>
+How does an increase in the value of a security affect the premium of its call options?	The premium for those options will increase
+What happens to the premium of a put option when its underlying stock's value decreases?	The premium goes up
+What can be concluded when a call option's premium decreases?	The value of the underlying stock has decreased
+What can be concluded when the value of a put option's premium decreases?	The value of the underlying stocks has increased
+What 2 factors does an option trader have control over when purchasing stock option contracts?	strike price<div>time until expiration</div>
+Another name for the exercise price	strike price
+What is the interval for strike prices less than $25?	$2.50
+What is the interval for strike prices between $25 and $200?	$5
+What is the interval for strike prices above $200?	$10
+When is a call option ITM?	When the underlying stock price is greater than the strike price
+When is a put option ITM?	When the strike price is above the current stock price
+For a call option, what price relationship exists when the strike price is above the current stock price?	The contract is OTM
+For a put option, what price relationship exists when the strike price is above the current stock price?	The contract is ITM
+What are the 3 relationships that can exist between a contract's strike price and the stock price?	In-The-Money<div>At-The-Money</div><div>Out-Of-The-Money</div>
+What is the price relationship when a strike price and a stock price are the same?	ATM
+Which strike/stock price relationship has the highest costs?	ITM contracts
+How does the more an option is OTM affect its premium?	The more OTM, the lower the option price
+Between ITM, ATM, and OTM options, which is the riskiest?	OTM options - stocks require a larger movement before they are ITM
+Which strike/stock price relationship has the slowest movement in option price?	OTM
+Which strike/stock price relationship has the fastest movement in price?	ITM
+What is the best strike/stock price relationship to trade with for beginners?	ATM
+What is another name for the time value of an option?	Extrinsic value
+What is the extrinsic value of an option?	The dollar value placed on the remaining life of the option
+What is the intrinsic value of an option that is OTM?	0<br><br>The option is of no real value
+What does intrinsic value refer to?	The real value of the option
+Explain time decay in terms of options trading	The decrease in time value of an option due to the option approaching its expiration date
+What does it mean that an option is a wasting asset?	Options are subject to time decay, and risk becoming worthless 
+What happens to an option's premium the further it is away from expiry?	The premium increases
+What is option volatility?	The measure of risk or uncertainty of an option
+How does having a high volatility affect an option's premium?	High volatility will inflate the premium for that option
+How does a low volatility affect an option's ask price?	Low volatility results in a lower ask price
+What two components make up volatility for stock options?	historical volatility<div><br></div><div>implied volatility</div>
+For options, what is historical volatility?	How volatile the underlying stock has been in the past
+For options, what is implied volatility?	The market's view on how volatile the underlying stocks will be in the future
+What does 'chasing strength' refer to?	Purchasing an option with a price that's inflated due to high volatility<div><br></div><div>Chasing what appears to be a strong option once its volatility has already increased</div>
+What is the main risk of purchasing a volatile option?	Losing money quickly through purchasing an option with an inflated price 
+What benefit is there to purchasing volatile options?	Volatile options have the most potential for quick gains (but also losses)
+What are the five Greeks?	delta<br>gamma<div>theta<br>vega</div><div>rho</div>
+What is option delta?	How much an option's premium changes for each $1 change to the underlying stock
+What is option gamma?	The amount delta will change for every $1 movement of the underlying stock
+What is option theta?	The value that an option loses each day it approaches expiration<div><br></div><div>(t for time)</div>
+What is option vega?	How much the option premium will change as the volatility of the underlying stock changes<div><br></div><div>(v = volatility)</div>
+What is option rho?	How much the stock option price will change as the interest rate changes<div><br></div><div>(r = rate)</div>
+What is a bear market?	A market where stocks are trending down in value
+What is a bullish strategy?	A strategy where you think stocks will rise in price
+What is the name given to downward trending markets?	Bear markets
+What is the name given to upward trending markets?	Bull markets
+What are neutral stocks?	Stocks that aren't trending up or down
+What is another name for neutral stocks?	sideways trending stocks<div><br></div><div>or</div><div><br></div><div>channeling stocks</div>
+What is a Married Put?	When an investor purchases a put option, and at the same time purchases the same number of underlying stocks
+Why would an investor utilise a Married Put strategy?	To hedge their investment against a decrease in the value of their stocks
+In a Married Put, what is the most that can be lost?	The cost of the put option
+What is the strategy behind a Married Put?	When the underlying stocks decrease in value, the put can be exercised so that the investor sells their stocks at the original purchase price - the same as the put's strike price
+What is hedging?	An investment taken out to limit the risk of another investment
+What is a Protective Put?	When an investor purchases a put option to protect profits of stocks they already own
+In the Protective Put strategy, what does 'rolling up your options' refer to?	Purchasing put options on a rolling basis to lock in the increase in value of your stocks
+How do Protective Puts and Married Puts differ?	In a Married Put, stocks are purchased when the put is purchased<div><br></div><div>In a Protective Put, a put is purchased to protect stocks already owned</div>
+What does 'writing' refer to for stock options?	selling stock options
+What is a covered call option?	When the option seller owns the underlying stock the option is derived from
+What is a naked call option?	When an option seller writes an option for stocks they don't own
+When writing call options, which strategy comes with a higher risk?	naked call options have a higher risk
+Why is writing naked call options risky?	You are writing contracts for stocks you do not own, and are obligated to purchase the underlying stocks should a buyer exercise your contract
+What is the technical term for analysing stock charts?	Technical analysis
+What is technical analysis?	The analysis of stock charts
+What is a stock chart?	A graphical representation of a stock's price over a period of time
+On a stock chart, what does volume refer to?	The number of shares traded in a period of time
+What is the name given to 'the number of stocks traded over a particular period'?	volume
+On a stock chart, what does 'change' refer to?	The difference in a stock's latest closing price and its current price
+What does a spike in volume indicate?	There have been many trades on the stock for that period, and thus the movement of the stock should be taken seriously
+What is an OHLC bar chart?	A bar chart showing Open, High, Low, and Close values for stock over a time period
+What does 'price action' refer to?	The movement of a stock's price
+What does each bar in a weekly price chart represent?	One week's worth of price action for that stock
+In a bar chart, what does OHLC refer to?	The open, high, low, and close values for a particular time period
+How does a line chart differ from a bar or candlestick chart?	Line charts only show closing values
+What is a drawback of using a line chart?	Line charts do not allow you to evaluate the price range for the period 
+In a bar chart, what does the horizontal line on the right of the bar represent?	The closing price of the stock for that particular period of time
+"<span style=""line-height: 13.1999998092651px;"">In a bar chart, what does the horizontal line on the left of the bar represent?</span>"	The opening price for the stock for a particular period of time
+What does 'the body' refer to for candlestick charts?	The rectangular part of the graph, representing the price range between the opening and closing prices for the period of time
+In a candlestick chart, what do 'the shadows' refer to?	The tips or tails of the chart
+What do the shadows of a candlestick chart represent?	The high and low prices for the period
+What does a white or green body mean for a candlestick chart?	The stock closed higher than it opened 
+What does a black or red body mean for a candlestick chart?	The stock closed lower than its opening price 
+For a white or green candlestick chart, what does the top of the body represent?	The closing price for the period
+"<span style=""line-height: 13.1999998092651px;"">For a red or black candlestick chart, what does the top of the body represent?</span>"	The opening price for the period
+What does a large body for a candlestick chart represent?	A large difference between the opening and closing prices for that period
+Which three time frames can a trendline be narrowed down into?	short term<div>intermediate term</div><div>long term</div>
+What is important when it comes to using timeframes for trendlines?	Using short, intermediate, and long term time frames to get a bigger picture of the stock
+What is a trendline?	A straight line on a stock chart drawn along at least two highs, or two lows
+What do more points on a trendline indicate?	The more points, the more significant the trendline 
+What increases the significance of a trendline?	The more prices that touch the line, the more significant it is
+What information can be gleaned from many prices touching a trendline?	The trendline is significant of a real trend
+What are trendlines used for?	Showing the direction of a stock's price
+What three types of trend are there?	downward / bearish<div>upward / bullish</div><div>side to side / channeling</div>
+When are trendlines drawn through price highs?	When prices are trending downwards
+When are trendlines drawn through price lows?	When prices are trending upwards
+What signifies a side to side trend	When prices are moving up and down between two parallel price barriers
+What name is given to a trend where prices move up and down between two parallel price barriers?	side to side
+What does a trendline represent when drawn through price highs?	the resistance level
+For trendlines, what is 'resistance level'?	a trendline passing through price highs, with price action below the trendline
+What does a trendline represent when drawn through price lows?	the support level
+For trendlines, what does 'support level' refer to?	A trendline drawn through price lows
+What is a trendline break?	When prices break or drift out of a trend and start a new trend
+What is trendline bounce?	When prices move toward a level, touch it, and then bounce back in the original direction
+What does it mean to 'go long' on a stock?	To buy a stock
+What does support refer to?	The price level a stock has had difficulty falling below
+What does resistance refer to?	The price high a stock has had difficulty breaking through
+What 2 scenarios are possible when a stock price meets its resistance or support?	It will either:<div><br></div><div>bounce off the level and continue in the opposite direction</div><div><br></div><div>or</div><div><br></div><div>break through the level and find a new support or resistance</div>
+Which 5 factors psychologically influence the significance of levels for investors?	TREVR<br><br>times tested<br>recency<br>extremity of level (new high/low)<br>volume near level<br>round numbers
+What does the acronym TREVR represent?	The 5 factors that influence the significance of a level to investors
+"The greater the number of times a level is tested, the <span class=""cloze"" data-cloze=""stronger"" data-ordinal=""1"">[...]</span> it becomes in holding the stock back"	"The greater the number of times a level is tested, the <span class=""cloze"" data-ordinal=""1"">stronger</span> it becomes in holding the stock back<br>
+"
+"The greater the volume traded near a level, the <span class=""cloze"" data-cloze=""more&#x20;significant"" data-ordinal=""1"">[...]</span> the level is to investors"	"The greater the volume traded near a level, the <span class=""cloze"" data-ordinal=""1"">more significant</span> the level is to investors<br>
+"
+How does the age of a level affect its significance for investors?	The more recent the level, the more significant
+How does the extremity of a level influence its significance for investors?	The more extreme, the more significant
+What is significant of levels found at round numbers?	They leave a lasting imprint on investors
+What do 'support' and 'resistance' refer to?	The prices on a chart that appear to hold the price back<br><br>(rather than the lines for the levels)
+What happens to a resistance level once the stock price breaks through?	It becomes the support level for the stock
+What happens to a support level once the stock price breaks through?	It becomes the resistance level for the stock
+What are technical indicators used for?	establishing trends<div>determining entry and exit signals</div>
+What does a moving average show?	the price trend over a period of time
+From which values are moving averages usually calculated?	closing prices
+How is a 7-day MA calculated?	By taking the closing price for the last 7 days, and finding their average
+What does MA refer to?	moving average
+What is an indicator?	a calculation based on a security's price and/or volume
+What is a lagging indicator?	An indicator which trails the actual price action of the underlying stock
+Why is MA a lagging indicator?	MA's show changes later than the actual price action does
+How does an MA with a shorter period appear?	It closely mimics the price action
+What 3 types of MA are there?	simple<div>exponential</div><div>weighted</div>
+How is an SMA calculated?	Each price point in the calculation is given equal weight
+How is an EMA calculated?	Recent prices are given&nbsp;exponentially&nbsp;more weight than older prices
+How is a WMA calculated?	Recent prices are given more weight than older prices
+What is SMA?	simple moving average
+What is EMA?	exponential moving average
+What is WMA?	weighted moving average
+Of the 3 types of MA, which is most sensitive to price movement?	WMA
+Of the 3 types of MA, which is the least sensitive to changes in price?	SMA
+When is an MA not useful?	When prices are not trending
+How is stock volume important with regards to price action?	stock volume either supports or denies the legitimacy of price movement
+When is it easier to find buyers and sellers?	When a stock is moving on high volume
+Which indicator tells us about emotional excitement in a stock?	volume
+What is usually evident from an increase in volume at the beginning of a new trend?	That there is support for the price movement, and the trend is likely to continue
+At which point during a trend does an increase in volume most significantly support the price movement?	at the start of the trend
+What may it signify if there is a spike in volume during an established trend?	The trend may be about to change
+What may a divergence in stock price and volume indicate?	There is little support for the price movement, and the trend has little likelihood of continuing
+What is stock price and volume divergence?	When a stock price increases or decreases, and volume decreases (does not support the movement) 
+How can volume and stock price indicate trader uncertainty?	When the price movement and volume is diverging
+What does 'overbought' refer to?	A technical condition where there has been a lot of buying, the price is considered too high, and is susceptible to a decrease in price
+Which term describes the following:<div><br></div><div>A technical condition where there has been a lot of buying, the price is considered too high, and is susceptible to decline</div>	overbought
+What does 'oversold' mean?	A technical condition where there is a lot of selling, the price is considered too low, and a rally in price is anticipated
+Which term describes the following:<br><br>A technical condition where there is a lot of selling, the price is considered too low, and a rally in price is anticipated	oversold
+What are the two types of indicator?	lagging indicators<div><br></div><div>leading indicators</div>
+Which indicators are used to confirm price movement?	lagging indicators
+Which type of indicator is more heavily affected by recent price changes?	leading indicators
+What are leading indicators used for?	Generating buying and selling signals
+What is used to generate buying and selling signals?	leading indicators
+How can an oversold stock affect price movement?	Prices are susceptible to increases
+How can an overbought stock affect price movement?	Prices are susceptible to decreases
+Of the two types of indicators, which leads to more false signals?	leading indicators
+How are stochastic indicators represented?	indicators that oscillate
+What three types of stochastics exist?	fast stochastics<div>slow stochastics<br></div><div>full stochastics<br></div>
+Which are the most stable and reliable stochastics?	slow stochastics
+Why are slow stochastics called a 'momentum indicator'?	They indicate if a market is moving to new highs, new lows, or just meandering in the middle
+What does an oscillating indicator show when it is above its 80 line?	An overbought stock<div><br></div><div>(lots of buying, stock price is too high)</div>
+When does an oscillating stock reveal an overbought stock?	When it is above its 80 line
+"When does an oscillating indicator reveal an oversold<span style=""line-height: 1.1;"">&nbsp;stock?</span>"	When it is below its 20 line
+What are the names of the two lines in a slow stochastics indicator?	%K<div>%D</div>
+What are %K and %D?	The two lines that form a slow stochastics indicator
+For slow stochastics, what is %D?	It is a moving average of %K
+When is a slow stochastics indicator not useful?	In choppy or sideways trending markets
+When is a slow stochastics indicator useful?	When the market is clearly trending up or down
+What are the lines at 80 and 20 on slow stochastic indicators called?	Trigger lines
+What is the name given to the following:<div><br></div><div>when a market condition you specify is met</div>	A trigger
+What is a trigger?	When a market condition you specify is met
+For a slow stochastic indicator, when is the main buy or sell signal formed?	When %K crosses %D
+For slow stochastics, what does %K crossing %D indicate?	That a reversal in trend is possible
+For slow stochastics, what two events form a bullish signal?	both %K and %D drop to oversold territory<div><br></div><div>and</div><div><br></div><div>%K crosses %D in an upward direction</div>
+For slow stochastics, what two events must occur for a bearish signal to form?	both %K and %D must be in overbought territory<div><br></div><div>and</div><div><br></div><div>%K crosses %D in a downward direction</div>
+What does Williams %R measure?	overbought and oversold levels
+What is momentum?	The acceleration of a security's price or volume
+Which term describes the following:<div><br></div><div>The acceleration of a security's price or volume<br></div>	momentum
+Where are the trigger lines for a Williams %R?	at -20 and -80
+Which values indicate oversold stocks for Williams %R?	below -80
+Which values indicate an overbought stock for Williams %R?	values above -20
+What does the number in parenthesis on a Williams %R indicate?	The period used to calculate the Williams %R
+What should be done when a possible entry / exit signal is determined using a leading indicator?	The price movement should be confirmed using a lagging indicator
+Once a security is in oversold / overbought territory, what should a trader always do?	wait for confirmation that there is indeed a price reversal
+What does a Williams %R tell traders?	Whether a closing price is trading near a high, a low, or in the middle within the selected trading range
+Name 3 types of oscillating indicators	slow stochastics<div>Williams %R</div><div>Relative Strength Index</div>
+What does RSI stand for?	Relative Strength Index
+What types of indicator are common to the following:<div><br></div><div>Slow Stochastics</div><div>Williams %R</div><div>Relative Strength Index</div>	leading<div>momentum</div><div>oscillating</div>
+What is the centre line for RSI often viewed as?	Both a resistance and support line for the indicator
+Where are the trigger lines for RSI?	30 and 70
+When the RSI falls below 30, in what state is the security?	oversold
+When the RSI is above 70, in what state is the security?	overbought
+What does it generally mean for a security when its RSI is below 50?	The stock's losses are greater than its gains<div><br></div><div>i.e. more selling than buying</div>
+What does it generally mean for a security when its RSI is above 50?	Its gains are greater than its losses<div><br></div><div>i.e. there is more buying than selling</div>
+In an RSI, where would you expect to find its line when the security's gains are greater than its losses?	above 50
+In an RSI, where would you expect to find its line when the security's losses are greater than its gains?	below 50
+What types of indicator is MACD?	lagging<div>momentum</div><div>oscillating</div>
+What does MACD stand for?	Moving Average Convergence Divergence
+What two lines make a MACD?	MACD line (difference of two price action EMAs)<div><br></div><div>signal line (MA of MACD line)</div>
+How is the MACD signal line calculated?	It is an MA of the MACD line
+How is a MACD calculated?	By a long EMA being subtracted from a short EMA
+What is a MACD 12,26,9?	MACD with EMA 12-day, EMA 26-day, and signal line with MA 9-day
+From which values is a MACD histogram calculated?	The difference between the MACD line and signal line
+When does a MACD make a bullish crossover?	When the MACD turns up and crosses the signal line
+What is it called when a MACD line turns up and crosses its signal line?	Bullish crossover
+What is it called when a MACD line turns down and crosses its signal line?	Bearish crossover
+When does a MACD show a bearish crossover?	When the MACD turns down and crosses its signal line
+What does a positive MACD indicate for its EMAs?	The short EMA is above the long EMA
+What does a negative MACD indicate for its EMAs?	The long EMA is above the short EMA
+When evaluating a MACD, when is a stock in upside momentum?	When the MACD is positive
+When evaluating a MACD, when is a stock in downside momentum?	When MACD is negative
+For MACDs, what do increasing positive values indicate?	An increase in upside momentum
+For MACDs, what do decreasing negative values indicate?	Increase in downside momentum
+For MACDs, what is a bullish centreline crossover?	When the MACD line crosses the centreline in an upward direction (MACD turns positive)
+For MACDs, what is a bearish centreline crossover?	When the MACD line crosses the centerline in a downward direction (MACD turns negative)
+Which term describes a MACD line crossing the centreline into the positive?	bullish centreline crossover
+Which term describes a MACD line crossing the centreline into the negative?	bearish centreline crossover
+As a beginner, on what interval should stock charts be analysed?	6 months
+As a beginner, what periods should be used for MA analysis?	8 day<br><br>23 day
+For analysing a stock chart with 2 MAs, what should the longer MA be used for?	determing if there is a trend
+For analysing a stock chart with 2 MAs, what should the shorter MA be used for?	confirming entry / exit signals
+When an oversold signal is produced, what should be done before entering the trade?	wait for the security's price to rise above your short MA
+When an overbought signal is produced, what should be done before entering the trade?	wait for the security's price to fall below your short MA
+What is the Relative Strength Index? 	A momentum oscillator that measures the speed and change of a security's price movement 
+What is a derivative?	Another name for a stock option
+What is another name for stock options?	Derivatives<div><br></div><div>(options are derived from stocks)</div>
+What is fundamental analysis?	A technique that attempts to determine a security's value by focusing on underlying factors that affect a company's actual business and its future prospects
+Which term describes the following:<div><br></div><div>A technique that attempts to determine a security's value by focusing on underlying factors that affect a company's actual business and its future prospects<br></div>	fundamental analysis
+What is the recommended length for a watch list?	50 - 100 stocks
+What are the 4 essentials of trend analysis?	<div>TCOL</div><div><br></div>determining if Trend is up / down<div>Correlation between price and volume</div><div>evaluate Overbought / Oversold signals</div><div>determine Levels (support / resistance)</div>
+What does TCOL represent?	The 4 essential aspects of trend analysis
+What is a stock option chain?	A list of all stock option contracts for a security
+What is the name for a list of all stock option contracts for a security	stock option chain
+What is a margin account? 	An account where you can trade with borrowed money 
+Which type of brokerage account lets you trade with borrowed money? 	Margin account 
+What is a non-margin brokerage account? 	An account where you trade with your own money <br><br>i.e. not borrowed
+What type of brokerage account requires you to trade with your own money? 	A non-margin account 
+What are the 5 ways you get taxed?	<div>Spending</div>Inflation<div>Death</div><div>Earnings<br></div><div>Saving / Investing<br></div>
+What does the SIDES acronym refer to?	The 5 ways you get taxed<br><br>i.e. tax blindSIDES you
+On which Friday of each month do options expire?	the 3rd Friday
+What is leverage?	leverage allows a small amount of money to participate in the movement of a large amount of money
+Which term describes the following:<div><br></div><div>allowing a small amount of money to participate in the movement of a large amount of money<br></div>	leverage
+How long before an option expires should you sell or close out your option positions? 	30 days 
+What is time value erosion?	A decrease in the value of an option due to the option approaching its expiration
+What happens to time decay in the last 30 days of an option?	It accelerates
+When does time decay begin accelerating for any particular option?	From 30 days before expiration 
+If you are planning to hold a contract for 2 months, how many months away should the contract be from expiration when you buy it?	3 months<div><br></div><div>2 months + 1 month sell date</div>
+Why would you purchase a contract expiring in 3 months if you want to hold it for 2 months?	So that you can sell it 30 days before it expires
+What does it mean to go short on a stock?	To sell a stock
+What does 'closing a contract out' mean?	Selling your contract
+What is the maximum gain on a put option?	The value of the option when the underlying security reaches zero
+What is the maximum gain on a call option?	unlimited<br><br>the option's value will increase with the underlying security, which has no upper limit
+What is the name for the strategy when trading side-to-side or channeling stocks?	Neutral trading strategy 
+What is a neutral trading strategy?	A strategy based on side-to-side or channeling stocks
+What name is given to the total number of option contracts that are available on a day?	open interest
+What is open interest?	the total number of option contracts that are available on a day
+When deciding to enter a trade, what value should open interest be at for the security?	at least 100
+How would you offset the exposure of writing a call option?	by purchasing a call option with exactly the same features
+What is an offsetting transaction?	an activity which exactly cancels the risks and benefits of another
+Which term describes the following:<div><br></div><div>an activity which exactly cancels the risks and benefits of another<br></div>	offsetting transaction
+What is a stock market index?	Stocks grouped together to measure a sector of the market
+Which term describes the following:<div><br></div><div>Stocks grouped together to measure a sector of the market<br></div>	Stock market index
+What does FTSE stand for?	Financial Times Stock Exchange
+What does FTSE index?	The 100 companies on the London Stock Exchange with the highest market capitalisation
+What are 'shares outstanding'?	Company stock currently held by all of its shareholders
+Which term describes:<div><br></div><div>Company stock currently held by all of its shareholders<br></div>	shares outstanding
+What is market capitalisation?	The value of a company based on its outstanding shares multiplied by the current market value
+Which term describes the following:<div><br></div><div>The value of a company based on its outstanding shares multiplied by the current market value<br></div>	market capitalisation
+How is performance of an individual stock or mutual fund gauged?	By comparing it to a relevant stock market index
+How should one want an individual stock / mutual fund to perform in comparison to the index it tracks?	It should be keeping up with or beating its annual percentage return
+What is a broad-based index?	An index designed to reflect the movement of an entire market<div><br></div><div>i.e. covers a large number of stocks</div>
+Which term describes the following:<div><br></div><div>An index designed to reflect the movement of an entire market<br></div>	broad-based index
+Which broad-based index is heavily weighted in technology and internet stocks?	Nasdaq Composite Index
+Which broad-based index is commonly referred to as the 'technology index'?	Nasdaq
+What is used as a benchmark for the performance of a security?	The yearly percent return of the index it tracks
+On an option chain, what does 'last' refer to?	The last price at which the option was traded<div><br></div><div>(could be minutes / days / weeks etc)</div>
+In an option chain, what does 'change' refer to?	The change in the option's price since the previous day's close
+How do a mutual fund and ETF differ in terms of when they can be traded?	mutual funds can only be traded at the end of the day<div><br></div><div>ETFs can be traded any time of the day</div>
+What is a stop order?	An order placed with a broker to sell a security when it reaches a certain point
+Which term describes the following:<div><br></div><div>An order placed with a broker to sell a security when it reaches a certain point<br></div>	stop order
+What is a stop order used for?	limiting loss<div><br></div><div>protecting gains</div>
+What is another name for a stop?	hard stop
+How does a hard stop differ from a stop loss?	hard stop locks in profit<div><br></div><div>stop loss limits loss on a trade</div>
+What is a trailing stop?	a stop order that automatically fluctuates with an increase in the option's value
+In which direction is a trailing stop applicable?	upwards<div><br></div><div>i.e. trailing stop will adjust upwards with an increase in the value of an option, but never downwards with a decrease</div>
+What is a good practice for stop orders when entering a trade?	setting a 50% stop loss to reduce losses
+When may it be a good idea to place a hard stop at an option's break-even point?	once the trade has made around 30% profit
+What is the bid price?	The price at which you can sell an option you have purchased
+In an option chain, what is the ask price?	The price at which you will purchase the option
+Describe the '2 close exit strategy' for owning call options	exit when the stock closes 2 consecutive days below your 8dma
+Describe the '2 close exit strategy' for owning put options	exit when the stock closes 2 consecutive days above your 8dma

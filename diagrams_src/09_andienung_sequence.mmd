@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant K as Käufer (Long)
+    participant B as Clearingstelle (OCC)
+    participant S as Stillhalter (Du / Short)
+    K->>B: Übt die Option aus (Exercise)
+    B->>S: Teilt die Pflicht zu (Assignment)
+    S->>K: Liefert bzw. kauft 100 Aktien zum Strike
+    Note over S: Pflicht erfüllt · die Prämie bleibt dir

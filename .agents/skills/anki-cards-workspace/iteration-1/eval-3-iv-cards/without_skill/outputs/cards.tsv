@@ -1,0 +1,8 @@
+Was ist implizite Volatilität (IV)?	Die implizite Volatilität spiegelt die Markterwartung zukünftiger Kursschwankungen wider. Sie wird aus aktuellen Optionspreisen abgeleitet — nicht aus historischen Kursdaten.	iv options-basics
+Was bedeutet hohe implizite Volatilität (IV) für Optionsprämien?	Hohe IV → teure Optionsprämien. Der Markt erwartet große Kursbewegungen, daher zahlen Käufer mehr für den Schutz oder die Spekulation.	iv options-basics
+Was bedeutet niedrige implizite Volatilität (IV) für Optionsprämien?	Niedrige IV → günstige Optionsprämien. Der Markt erwartet geringe Kursschwankungen, daher sind Optionen billiger.	iv options-basics
+Was ist ein IV Crush?	Ein IV Crush tritt auf, wenn die implizite Volatilität nach einem wichtigen Event (z. B. Earnings) schlagartig abfällt — weil die Unsicherheit aufgelöst wurde.	iv-crush options-risks
+Wann tritt ein IV Crush typischerweise auf?	Nach wichtigen Ereignissen wie Quartalsergebnissen (Earnings), Notenbanksitzungen (Fed) oder anderen marktbewegenden Events.	iv-crush events
+Wen schadet ein IV Crush?	IV Crush schadet Long-Options-Inhabern (Käufern): Selbst wenn die Kursbewegung eintritt, kann der Prämienverfall durch den IV-Rückgang die Gewinne zunichte machen.	iv-crush options-risks
+Was misst Vega?	Vega misst, wie stark sich der Optionspreis bei einer Veränderung der IV um +1% verändert. Vega ist positiv für Long-Optionen.	greeks vega
+Wie wirkt sich ein hoher Vega-Wert auf eine Long-Option bei IV Crush aus?	Ein hoher Vega bedeutet, dass die Option stark auf IV-Änderungen reagiert. Bei einem IV Crush fällt der Optionspreis daher umso stärker.	greeks vega iv-crush

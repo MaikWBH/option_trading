@@ -1,0 +1,234 @@
+{
+  "skill_name": "anki-cards",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "label": "With anki-cards Skill",
+      "evals": [
+        {
+          "eval_id": "eval-1-greeks",
+          "eval_name": "Greeks Cards German",
+          "prompt": "Erstelle Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega auf Deutsch.",
+          "pass_count": 5,
+          "total_assertions": 5,
+          "pass_rate": 1.0,
+          "assertions": [
+            {
+              "text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "A TSV export section with #separator:tab and #html:true headers is present",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Cards are written in German (German terms and explanations)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            }
+          ]
+        },
+        {
+          "eval_id": "eval-2-covered-call",
+          "eval_name": "Covered Call Payoff Diagram",
+          "prompt": "Anki-Karten f\u00fcr die Covered Call Strategie mit Payoff-Diagramm.",
+          "pass_count": 5,
+          "total_assertions": 5,
+          "pass_rate": 1.0,
+          "assertions": [
+            {
+              "text": "A Mermaid diagram showing the payoff profile is included",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Maximum gain formula and value are stated",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Maximum loss and breakeven point are mentioned",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "A concrete example with specific numbers is given",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "TSV export is included with #separator:tab header",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            }
+          ]
+        },
+        {
+          "eval_id": "eval-3-iv-cards",
+          "eval_name": "IV Cards From Notes",
+          "prompt": "Erstelle Anki-Karten aus Notizen zur impliziten Volatilit\u00e4t.",
+          "pass_count": 5,
+          "total_assertions": 5,
+          "pass_rate": 1.0,
+          "assertions": [
+            {
+              "text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Each card tests exactly one concept (atomic design)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "IV crush is explained with a concrete scenario",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "At least one card includes a memory hook, analogy, or example",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "TSV export section is present and well-formed",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            }
+          ]
+        }
+      ],
+      "overall_pass_rate": 1.0,
+      "total_passed": 15,
+      "total_assertions": 15
+    },
+    {
+      "name": "without_skill",
+      "label": "Baseline (No Skill)",
+      "evals": [
+        {
+          "eval_id": "eval-1-greeks",
+          "eval_name": "Greeks Cards German",
+          "prompt": "Erstelle Anki-Karten f\u00fcr Delta, Gamma, Theta und Vega auf Deutsch.",
+          "pass_count": 5,
+          "total_assertions": 5,
+          "pass_rate": 1.0,
+          "assertions": [
+            {
+              "text": "Output contains cards for all four Greeks: Delta, Gamma, Theta, Vega",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Each card has a concrete numerical example (e.g., dollar amounts or percentage changes)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "At least one Mermaid diagram block is included (```mermaid or <div class=\"mermaid\">)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "A TSV export section with #separator:tab and #html:true headers is present",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Cards are written in German (German terms and explanations)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            }
+          ]
+        },
+        {
+          "eval_id": "eval-2-covered-call",
+          "eval_name": "Covered Call Payoff Diagram",
+          "prompt": "Anki-Karten f\u00fcr die Covered Call Strategie mit Payoff-Diagramm.",
+          "pass_count": 4,
+          "total_assertions": 5,
+          "pass_rate": 0.8,
+          "assertions": [
+            {
+              "text": "A Mermaid diagram showing the payoff profile is included",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Maximum gain formula and value are stated",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Maximum loss and breakeven point are mentioned",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "A concrete example with specific numbers is given",
+              "passed": false,
+              "evidence": "Auto-graded: FAIL"
+            },
+            {
+              "text": "TSV export is included with #separator:tab header",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            }
+          ]
+        },
+        {
+          "eval_id": "eval-3-iv-cards",
+          "eval_name": "IV Cards From Notes",
+          "prompt": "Erstelle Anki-Karten aus Notizen zur impliziten Volatilit\u00e4t.",
+          "pass_count": 3,
+          "total_assertions": 5,
+          "pass_rate": 0.6,
+          "assertions": [
+            {
+              "text": "Cards cover at least 3 distinct concepts: IV definition, IV-premium relationship, IV crush, Vega",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "Each card tests exactly one concept (atomic design)",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "IV crush is explained with a concrete scenario",
+              "passed": true,
+              "evidence": "Auto-graded: PASS"
+            },
+            {
+              "text": "At least one card includes a memory hook, analogy, or example",
+              "passed": false,
+              "evidence": "Auto-graded: FAIL"
+            },
+            {
+              "text": "TSV export section is present and well-formed",
+              "passed": false,
+              "evidence": "Auto-graded: FAIL"
+            }
+          ]
+        }
+      ],
+      "overall_pass_rate": 0.8,
+      "total_passed": 12,
+      "total_assertions": 15
+    }
+  ]
+}

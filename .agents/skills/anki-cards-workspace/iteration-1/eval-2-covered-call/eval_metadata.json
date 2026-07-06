@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "eval_name": "covered-call-payoff-diagram",
+  "prompt": "Mach mir Anki-Karten für die Covered Call Strategie. Ich will verstehen wann ich sie einsetze, wie das Payoff aussieht, und was der maximale Gewinn/Verlust ist. Am liebsten mit einem Payoff-Diagramm.",
+  "assertions": [
+    "A Mermaid diagram showing the payoff profile is included (xychart-beta or flowchart)",
+    "Maximum gain formula and value are stated (premium + price difference to strike)",
+    "Maximum loss and breakeven point are mentioned",
+    "A concrete example with specific numbers (stock price, strike price, premium) is given",
+    "TSV export is included with #separator:tab header"
+  ]
+}

@@ -1,0 +1,4 @@
+flowchart TD
+    S["Du verkaufst einen Put<br/>Strike 50 $ · Prämie 1,50 $<br/>5.000 $ als Sicherheit hinterlegt"] --> E{"Wo steht der Kurs<br/>am Verfallstag?"}
+    E -->|"über 50 $"| A["Put verfällt wertlos<br/>Du behältst 150 $ Prämie<br/>➜ Gewinn ohne Aktienkauf"]
+    E -->|"unter 50 $"| B["Andienung: Du kaufst 100 Aktien zu 50 $<br/>Effektiver Einstand = 48,50 $<br/>➜ günstiger Einstieg wie geplant"]
