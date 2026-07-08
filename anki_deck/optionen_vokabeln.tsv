@@ -1,0 +1,29 @@
+#separator:tab
+#html:true
+#notetype:Cloze
+#deck column:1
+#tags column:4
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Basiswert</b> → auf Englisch: {{c1::Underlying}}	Der Wert, auf den sich die Option bezieht (z.&nbsp;B. eine Aktie).	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Aktie</b> → auf Englisch: {{c1::Stock}} (auch: Share)	Ein einzelner Anteil an einer Firma.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Ausübungspreis / Basispreis</b> → auf Englisch: {{c1::Strike (Price)}}	Fester Preis für Kauf oder Verkauf der Aktie.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Prämie</b> → auf Englisch: {{c1::Premium}}	Der Preis der Option selbst.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Kaufoption</b> → auf Englisch: {{c1::Call}}	Recht, die Aktie zu kaufen.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Verkaufsoption</b> → auf Englisch: {{c1::Put}}	Recht, die Aktie zu verkaufen.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Verkäufer / Stillhalter</b> → auf Englisch: {{c1::Seller / Writer}}	Hat die Pflicht und kassiert die Prämie.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Ausübung</b> → auf Englisch: {{c1::Exercise}}	Der Käufer nutzt sein Recht.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Andienung</b> → auf Englisch: {{c1::Assignment}}	Dem Verkäufer wird die Pflicht zugeteilt.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>innerer Wert</b> → auf Englisch: {{c1::Intrinsic Value}}	Der Teil der Prämie, der schon echtes Geld wert ist (nur ITM).	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Zeitwert</b> → auf Englisch: {{c1::Time Value}} (Extrinsic Value)	Aufschlag für Restzeit &amp; Unsicherheit; schmilzt auf null.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Zeitwertverfall</b> → auf Englisch: {{c1::Time Decay}}	Täglicher Wertverlust der Option (Theta).	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>implizite Volatilität</b> → auf Englisch: {{c1::Implied Volatility}} (IV)	Vom Markt erwartete Schwankungsbreite.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Verfall / Verfallstag</b> → auf Englisch: {{c1::Expiration}} (Expiry)	Letzter Gültigkeitstag der Option.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Restlaufzeit</b> → auf Englisch: {{c1::Days to Expiration (DTE)}}	Verbleibende Tage bis zum Verfall.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>im Geld</b> → auf Englisch: {{c1::In The Money (ITM)}}	Option hat inneren Wert.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>am Geld</b> → auf Englisch: {{c1::At The Money (ATM)}}	Kurs ≈ Strike.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>aus dem Geld</b> → auf Englisch: {{c1::Out of The Money (OTM)}}	Kein innerer Wert – nur Zeitwert.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Geld-Brief-Spanne</b> → auf Englisch: {{c1::Bid-Ask Spread}}	Abstand zwischen Bid (Geld) und Ask (Brief).	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Optionskette</b> → auf Englisch: {{c1::Option Chain}}	Übersicht aller Strikes und Verfallstermine.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>gedeckelt (nach oben begrenzt)</b> → auf Englisch: {{c1::capped}}	Z.&nbsp;B. der Gewinn beim Covered Call.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>eine Position rollen</b> → auf Englisch: {{c1::Rolling}}	Alte Option zurückkaufen, neue mit späterem Verfall verkaufen.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Gebühr</b> → auf Englisch: {{c1::Commission}} (Fee)	Kosten pro Kontrakt bzw. pro Order.	vokabel
+Optionshandel Grundlagen::Fachbegriffe (DE ⇄ EN)	<b>Konto (Depot)</b> → auf Englisch: {{c1::Account}}	Cash-Konto oder Margin-Konto.	vokabel

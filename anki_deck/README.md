@@ -1,6 +1,6 @@
 # Anki-Deck: Optionshandel Grundlagen
 
-Fertige Anki-Karten zum Optionshandel – auf Deutsch, in einfacher Sprache, mit Beispielen und Diagrammen. Erstellt auf Basis von [../data/Optionshandel_Interactive_Brokers.md](../data/Optionshandel_Interactive_Brokers.md).
+Fertige Anki-Karten zum Optionshandel – in erster Linie auf Deutsch, in einfacher Sprache, mit Beispielen und Diagrammen. Zu den wichtigsten Begriffen sind die **englischen Fachbegriffe** parallel eingepflegt (z.&nbsp;B. Prämie → *Premium*), damit du die im Optionshandel übliche englische Terminologie gleich mitlernst. Erstellt auf Basis von [../data/Optionshandel_Interactive_Brokers.md](../data/Optionshandel_Interactive_Brokers.md).
 
 ## Inhalt
 
@@ -9,10 +9,13 @@ Fertige Anki-Karten zum Optionshandel – auf Deutsch, in einfacher Sprache, mit
 | `optionen_basic.tsv` | Basic (Frage → Antwort) | 68 |
 | `optionen_cloze.tsv` | Cloze (Lückentext) | 12 |
 | `optionen_diagramme.tsv` | Basic mit Bild (Mermaid-Diagramme) | 10 |
+| `optionen_vokabeln.tsv` | Cloze (Deutsch → Englisch) | 24 |
 | `media/` | 10 Diagramm-Bilder (PNG) | — |
 
-**Gesamt: 90 Karten**, verteilt auf 7 Unterdecks unter `Optionshandel Grundlagen`:
-Grundlagen · Käufer & Verkäufer · Preis & Griechen · Strategien · IBKR-Umsetzung · Verfall & Andienung · Risikomanagement.
+**Gesamt: 114 Karten**, verteilt auf 8 Unterdecks unter `Optionshandel Grundlagen`:
+Grundlagen · Käufer & Verkäufer · Preis & Griechen · Strategien · IBKR-Umsetzung · Verfall & Andienung · Risikomanagement · Fachbegriffe (DE ⇄ EN).
+
+> **Zweisprachig lernen:** In den Antworten stehen die englischen Fachbegriffe kursiv in Klammern, z.&nbsp;B. „Prämie (engl. *Premium*)“. Bei Begriffen, die im Deutschen meist englisch benutzt werden, ist umgekehrt die deutsche Bedeutung ergänzt, z.&nbsp;B. „Breakeven (dt. Gewinnschwelle)“. Das Unterdeck **Fachbegriffe (DE ⇄ EN)** trainiert die Vokabeln zusätzlich gezielt per Lückentext.
 
 ---
 
@@ -32,20 +35,20 @@ Kopiere den **kompletten Inhalt** des Ordners `media/` (alle `*.png`) dorthin.
 
 ### 2. TSV-Dateien importieren
 
-Für **jede** der drei `.tsv`-Dateien:
+Für **jede** der vier `.tsv`-Dateien:
 
 1. In Anki: **Datei → Importieren…**
 2. Die `.tsv`-Datei auswählen.
 3. Anki erkennt die Kopfzeilen automatisch (Trennzeichen = Tab, HTML aktiviert, Notiztyp, Zieldeck).
-   - Falls gefragt: **Notiztyp** = `Basic` (bzw. `Cloze` für die Cloze-Datei), **Feldtrennung** = Tab.
+   - Falls gefragt: **Notiztyp** = `Basic` (bzw. `Cloze` für `optionen_cloze.tsv` und `optionen_vokabeln.tsv`), **Feldtrennung** = Tab.
    - „HTML in Feldern zulassen“ muss **aktiviert** sein.
 4. Auf **Importieren** klicken.
 
-Reihenfolge egal – am besten alle drei nacheinander importieren.
+Reihenfolge egal – am besten alle vier nacheinander importieren.
 
 ### 3. Fertig
 
-Die Karten liegen jetzt unter dem Deck **Optionshandel Grundlagen** mit seinen 7 Unterdecks. Du kannst sofort lernen.
+Die Karten liegen jetzt unter dem Deck **Optionshandel Grundlagen** mit seinen 8 Unterdecks. Du kannst sofort lernen.
 
 ---
 

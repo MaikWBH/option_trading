@@ -3,15 +3,15 @@
 #notetype:Cloze
 #deck column:1
 #tags column:4
-Optionshandel Grundlagen::Grundlagen	Ein <b>Call</b> gibt das Recht, die Aktie zu {{c1::kaufen}}; ein <b>Put</b> gibt das Recht, die Aktie zu {{c2::verkaufen}}.		cloze grundlagen
-Optionshandel Grundlagen::Grundlagen	1 Optionskontrakt = {{c1::100}} Aktien. Eine Prämie von 1,50&nbsp;$ entspricht also {{c2::150&nbsp;$}} pro Kontrakt.		cloze grundlagen kontrakt
-Optionshandel Grundlagen::Grundlagen	Der Käufer einer Option hat ein {{c1::Recht}}, der Verkäufer (Stillhalter) hat eine {{c2::Pflicht}}.		cloze positionen
-Optionshandel Grundlagen::Preis & Griechen	Prämie = {{c1::Innerer Wert}} + {{c2::Zeitwert}}.	Der Zeitwert schmilzt bis zum Verfall auf null.	cloze preis
-Optionshandel Grundlagen::Preis & Griechen	{{c1::Delta}} misst die Preisänderung pro 1&nbsp;$ Kursbewegung. {{c2::Theta}} misst den täglichen Zeitwertverlust. {{c3::Vega}} misst die Reaktion auf Volatilität.		cloze griechen
-Optionshandel Grundlagen::Preis & Griechen	Hohe implizite Volatilität (IV) führt zu {{c1::hohen}} Prämien – für den Verkäufer {{c2::gut}}.		cloze volatilitaet
-Optionshandel Grundlagen::Strategien	Beim <b>Cash-Secured Put</b> gilt: Breakeven = {{c1::Strike − Prämie}}, maximaler Gewinn = {{c2::die Prämie}}.	Beispiel: Strike 50 $, Prämie 1,50 $ → Breakeven 48,50 $.	cloze strategien csp
-Optionshandel Grundlagen::Strategien	Beim <b>Covered Call</b> ist der Gewinn nach oben {{c1::gedeckelt}}, weil du die Aktien zum {{c2::Strike}} verkaufen musst.		cloze strategien covered-call
-Optionshandel Grundlagen::Strategien	Der Kreislauf aus Cash-Secured Put und Covered Call heißt {{c1::The Wheel}}; die kassierten Prämien nennt man die {{c2::zweite Dividende}}.		cloze strategien wheel
-Optionshandel Grundlagen::IBKR-Umsetzung	Bei Optionen immer {{c1::Limit}}-Orders nutzen, nie {{c2::Market}}-Orders – wegen der breiten Geld-Brief-Spanne.		cloze ibkr order
-Optionshandel Grundlagen::Verfall & Andienung	Läuft die Option <b>OTM</b> aus, {{c1::verfällt sie wertlos}} und die Prämie ist Gewinn. Läuft sie <b>ITM</b> aus, wirst du {{c2::angedient}}.		cloze verfall
-Optionshandel Grundlagen::Risikomanagement	Verkaufe Puts nur auf Aktien, die du {{c1::wirklich besitzen willst}}, und halte die Positionsgröße {{c2::klein}}.		cloze risiko
+Optionshandel Grundlagen::Grundlagen	Ein <b>Call</b> (dt. Kaufoption) gibt das Recht, die Aktie zu {{c1::kaufen}}; ein <b>Put</b> (dt. Verkaufsoption) gibt das Recht, die Aktie zu {{c2::verkaufen}}.		cloze grundlagen
+Optionshandel Grundlagen::Grundlagen	1 Optionskontrakt (engl. <i>contract</i>) = {{c1::100}} Aktien. Eine Prämie (engl. <i>premium</i>) von 1,50&nbsp;$ entspricht also {{c2::150&nbsp;$}} pro Kontrakt.		cloze grundlagen kontrakt
+Optionshandel Grundlagen::Grundlagen	Der Käufer (engl. <i>buyer</i>) einer Option hat ein {{c1::Recht}}, der Verkäufer/Stillhalter (engl. <i>seller/writer</i>) hat eine {{c2::Pflicht}}.	engl.: right vs. obligation.	cloze positionen
+Optionshandel Grundlagen::Preis & Griechen	Prämie = {{c1::Innerer Wert}} + {{c2::Zeitwert}}.	engl.: intrinsic value + time value. Der Zeitwert schmilzt bis zum Verfall auf null.	cloze preis
+Optionshandel Grundlagen::Preis & Griechen	{{c1::Delta}} misst die Preisänderung pro 1&nbsp;$ Kursbewegung. {{c2::Theta}} misst den täglichen Zeitwertverlust (engl. <i>time decay</i>). {{c3::Vega}} misst die Reaktion auf Volatilität (engl. <i>volatility</i>).		cloze griechen
+Optionshandel Grundlagen::Preis & Griechen	Hohe implizite Volatilität (IV, engl. <i>implied volatility</i>) führt zu {{c1::hohen}} Prämien – für den Verkäufer {{c2::gut}}.		cloze volatilitaet
+Optionshandel Grundlagen::Strategien	Beim <b>Cash-Secured Put</b> gilt: Breakeven (dt. Gewinnschwelle) = {{c1::Strike − Prämie}}, maximaler Gewinn (engl. <i>max profit</i>) = {{c2::die Prämie}}.	Beispiel: Strike 50 $, Prämie 1,50 $ → Breakeven 48,50 $.	cloze strategien csp
+Optionshandel Grundlagen::Strategien	Beim <b>Covered Call</b> (dt. gedeckter Call) ist der Gewinn nach oben {{c1::gedeckelt}}, weil du die Aktien zum {{c2::Strike}} verkaufen musst.	engl.: der Gewinn ist „capped“.	cloze strategien covered-call
+Optionshandel Grundlagen::Strategien	Der Kreislauf aus Cash-Secured Put und Covered Call heißt {{c1::The Wheel}}; die kassierten Prämien (engl. <i>premiums</i>) nennt man die {{c2::zweite Dividende}}.		cloze strategien wheel
+Optionshandel Grundlagen::IBKR-Umsetzung	Bei Optionen immer {{c1::Limit}}-Orders nutzen, nie {{c2::Market}}-Orders – wegen der breiten Geld-Brief-Spanne (engl. <i>bid-ask spread</i>).		cloze ibkr order
+Optionshandel Grundlagen::Verfall & Andienung	Läuft die Option <b>OTM</b> aus, {{c1::verfällt sie wertlos}} und die Prämie ist Gewinn. Läuft sie <b>ITM</b> aus, wirst du {{c2::angedient}}.	engl.: OTM → expires worthless; ITM → you get assigned.	cloze verfall
+Optionshandel Grundlagen::Risikomanagement	Verkaufe Puts nur auf Aktien, die du {{c1::wirklich besitzen willst}}, und halte die Positionsgröße (engl. <i>position size</i>) {{c2::klein}}.		cloze risiko
