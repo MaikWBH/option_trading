@@ -1,0 +1,46 @@
+{
+  "skill_name": "optionen-dokumentieren",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Dokumentiere mir bitte einen Cash-Secured Put: AAPL, Strike 210, Verfall 15.08.2026, Delta -0,25, Prämie 3,20 $. Grund: erhöhte IV laut Volatility Lab und Support-Zone bei 210. Analyse habe ich mit dem OptionTrader gemacht. Keine Earnings in der Laufzeit, Order als Limit am Mid platziert, Position ist klein, Bid-Ask-Spread eng und Open Interest hoch — und ja, AAPL will ich auch langfristig im Depot halten.",
+      "expected_output": "Vollständige Dokumentation ohne Warnung: DTE wird als ~33 Tage berechnet (innerhalb 30–45), Delta -0,25 liegt im CSP-Fenster (-0,20 bis -0,30). Es wird eine Markdown-Tabelle mit dem Trade ausgegeben und dieselbe Zeile an data/trade_log.md angehängt (Datei wird angelegt, falls sie fehlt). Alle 5 Sicherheits-Checks stehen auf OK. Am Ende folgt exakt die Bestätigungsmeldung.",
+      "files": [],
+      "expectations": [
+        "Berechnet die DTE aus dem Verfallsdatum und erkennt ~33 Tage als innerhalb des 30–45-Tage-Fensters (keine DTE-Warnung)",
+        "Erkennt Delta -0,25 als im gültigen CSP-Bereich (-0,20 bis -0,30) und gibt keine Delta-Warnung aus",
+        "Gibt eine reine Markdown-Tabelle mit den Trade-Daten aus (keine Grafik/kein Diagramm)",
+        "Hängt den Trade als Zeile an data/trade_log.md an bzw. legt die Datei mit Tabellenkopf neu an",
+        "Der Status der 5 Sicherheits-Checks (Earnings, Limit, Size, Liq, Own) ist als OK vermerkt",
+        "Endet mit exakt dem Satz: Trade erfolgreich dokumentiert und auf Regelkonformität geprüft.",
+        "Enthält keine Anlageberatung / Kaufempfehlung"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Ich hab einen Covered Call auf TSLA geschrieben und will ihn festhalten: Strike 260, Delta 0,38, Verfall 24.07.2026, Prämie 5,10 $. Grund: sehr hohe IV, will die fette Prämie mitnehmen. Analyse mit dem Probability Lab. Earnings fallen keine rein, Limit am Mid, Position klein, Spread eng, OI hoch, und die Aktie halte ich sowieso.",
+      "expected_output": "Der Skill erfasst den Trade, gibt aber zwei explizite Warnungen: (1) DTE liegt bei ~11 Tagen, also außerhalb des 30–45-Tage-Optimums; (2) Delta 0,38 ist aggressiver als 0,30 und bedeutet ein erhöhtes Andienungsrisiko. Die Abweichungen werden sichtbar gemacht, der Trade kann auf Wunsch trotzdem dokumentiert werden (mit vermerkter Abweichung), inklusive Tabelle und Anhängen an data/trade_log.md.",
+      "files": [],
+      "expectations": [
+        "Gibt eine explizite DTE-Warnung aus, weil ~11 Tage außerhalb des 30–45-Tage-Fensters liegen",
+        "Gibt eine explizite Delta-Warnung aus, weil 0,38 aggressiver als 0,30 ist",
+        "Weist auf das erhöhte Andienungsrisiko (Assignment) hin",
+        "Erfindet keine fehlenden Werte, sondern nutzt die genannten Angaben",
+        "Dokumentiert den Trade dennoch (Tabelle + Anhängen an data/trade_log.md), sofern der Nutzer das will, mit vermerkter Abweichung"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Trag mir bitte einen CSP auf KO ins Logbuch ein: Strike 60, Verfall 22.08.2026, Delta -0,22, Prämie 0,85 $. Grund: Ich mag Coca-Cola einfach.",
+      "expected_output": "Der Skill agiert als Gatekeeper: Er weist die Begründung \"Ich mag Coca-Cola\" als nicht ausreichend zurück und fordert eine qualifizierte Begründung (z. B. erhöhte IV, Support-Zone, Screening-Ergebnis). Außerdem fehlen die 5 Sicherheits-Checks und die TWS-Tool-Angabe — danach wird gefragt. Der Trade wird noch nicht ins Logbuch geschrieben und die finale Bestätigungsmeldung wird zurückgehalten.",
+      "files": [],
+      "expectations": [
+        "Weist die Begründung \"Ich mag Coca-Cola\" / Sympathie als unzureichend zurück",
+        "Fordert eine qualifizierte, überprüfbare Begründung ein (z. B. IV, Support/Charttechnik, Screening)",
+        "Fragt nach den offenen Sicherheits-Checks und/oder dem genutzten TWS-Tool",
+        "Schreibt den Trade NICHT nach data/trade_log.md, solange Grund und Checks offen sind",
+        "Gibt die finale Bestätigungsmeldung noch nicht aus"
+      ]
+    }
+  ]
+}
